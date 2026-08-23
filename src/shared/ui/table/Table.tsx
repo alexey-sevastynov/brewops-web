@@ -23,7 +23,7 @@ export function Table<TData>({ config }: TableProps<TData>) {
         enabled: config.stickyHeader ?? false,
         headTableRef,
         bodyTableRef,
-        data: config.reactTable.options.data,
+        data: config.reactTable.getRowModel().rows,
     });
 
     return (
