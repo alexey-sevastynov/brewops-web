@@ -15,6 +15,7 @@ export const inventoryAuditExtraReducers = (builder: ActionReducerMapBuilder<Inv
         .addCase(getAllInventoryAudits.pending, (state) => {
             state.loading = true;
             state.error = null;
+            state.data = [];
         })
         .addCase(getAllInventoryAudits.fulfilled, (state, action: PayloadAction<InventoryAudit[]>) => {
             state.data = action.payload;

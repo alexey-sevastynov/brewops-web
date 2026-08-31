@@ -11,11 +11,12 @@ interface AppLayoutProps {
 export default async function Layout({ children }: AppLayoutProps) {
     const userName = await getServerCookie(cookieKeys.userName);
     const userRole = await getServerCookie(cookieKeys.userRole);
+    const workspaceId = await getServerCookie(cookieKeys.workspaceId);
 
     if (!userName || !userRole) throw new Error("User data is missing.");
 
     return (
-        <AppLayout userName={userName} userRole={userRole}>
+        <AppLayout userName={userName} userRole={userRole} workspaceId={workspaceId ?? undefined}>
             {children}
         </AppLayout>
     );

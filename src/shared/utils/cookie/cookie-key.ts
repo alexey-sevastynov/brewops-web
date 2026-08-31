@@ -3,6 +3,8 @@ export const cookieKeys = {
     userName: "userName",
     isVerified: "isVerified",
     userRole: "userRole",
+    workspaceId: "workspaceId",
+    coffeeShopId: "coffeeShopId",
     theme: "theme",
 } as const;
 

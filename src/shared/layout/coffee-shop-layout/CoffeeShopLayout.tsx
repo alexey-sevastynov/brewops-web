@@ -5,14 +5,16 @@ import { Toolbar } from "@/shared/layout/toolbar/Toolbar";
 import { routeKeys } from "@/shared/constants/route-keys";
 import { iconNames } from "@/shared/ui/icon/icon-name";
 import { iconColors } from "@/shared/ui/icon/icon-color";
+import { CoffeeShopContextGate } from "@/modules/coffee-shop/components/CoffeeShopContextGate";
 
 interface CoffeeShopLayoutProps {
     children: React.ReactNode;
     userName?: string;
     userRole?: string;
+    workspaceId?: string;
 }
 
-export function CoffeeShopLayout({ children, userName, userRole }: CoffeeShopLayoutProps) {
+export function CoffeeShopLayout({ children, userName, userRole, workspaceId: _workspaceId }: CoffeeShopLayoutProps) {
     return (
         <div className="bg-background flex h-screen w-full overflow-hidden">
             <Sidebar
@@ -51,7 +53,9 @@ export function CoffeeShopLayout({ children, userName, userRole }: CoffeeShopLay
             />
             <div className="flex-1 overflow-auto">
                 <Toolbar className="shrink-0" userName={userName} userRole={userRole} />
-                <main className="p-4">{children}</main>
+                <main className="p-4">
+                    <CoffeeShopContextGate>{children}</CoffeeShopContextGate>
+                </main>
             </div>
         </div>
     );

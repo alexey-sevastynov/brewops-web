@@ -9,9 +9,7 @@ export const metadata = createMetadata({
     canonicalPath: routeKeys.home,
 });
 
-export default async function VerifyPage({ searchParams }: { searchParams: { token?: string } }) {
-    // TODO: remove "await" once Next.js stops requiring it (currently needed to avoid runtime error)
-    // eslint-disable-next-line @typescript-eslint/await-thenable
+export default async function VerifyPage({ searchParams }: { searchParams: Promise<{ token?: string }> }) {
     const { token } = await searchParams;
 
     return <AuthVerify token={token} />;

@@ -26,6 +26,7 @@ const inventoryAlertRuleSlice = createSlice({
             .addCase(getAllInventoryAlertRules.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.data = [];
             })
             .addCase(
                 getAllInventoryAlertRules.fulfilled,

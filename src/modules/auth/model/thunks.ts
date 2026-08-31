@@ -19,7 +19,13 @@ export const signIn = createAsyncThunk<AuthResponse, SignInDto, WithRejectValue>
                 password: signInDto.password,
             });
 
-            setAuthCookies(response.token, response.userName, !!response.isVerified, response.userRole);
+            setAuthCookies(
+                response.token,
+                response.userName,
+                !!response.isVerified,
+                response.userRole,
+                response.workspaceId,
+            );
 
             return response;
         } catch (error: unknown) {
@@ -40,21 +46,6 @@ export const signUp = createAsyncThunk<AuthResponse, SignUpDto, WithRejectValue>
                 firstName: undefined,
                 lastName: undefined,
             });
-
-            return response;
-        } catch (error: unknown) {
-            return rejectWithValue(convertToApiError(error));
-        }
-    },
-);
-
-export const signInAsGuest = createAsyncThunk<AuthResponse, void, WithRejectValue>(
-    "signInAsGuest",
-    async (_, { rejectWithValue }) => {
-        try {
-            const response = await createOne<null, AuthResponse>(apiEndpointNames.signInAsGuest, null);
-
-            setAuthCookies(response.token, response.userName, !!response.isVerified, response.userRole);
 
             return response;
         } catch (error: unknown) {

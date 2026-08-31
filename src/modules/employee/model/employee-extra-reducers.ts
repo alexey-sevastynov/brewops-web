@@ -15,6 +15,7 @@ export const employeeExtraReducers = (builder: ActionReducerMapBuilder<EmployeeS
         .addCase(getAllEmployees.pending, (state) => {
             state.loading = true;
             state.error = null;
+            state.data = [];
         })
         .addCase(getAllEmployees.fulfilled, (state, action: PayloadAction<Employee[]>) => {
             state.data = action.payload;

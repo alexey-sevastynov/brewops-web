@@ -12,4 +12,7 @@ export const routeKeys = {
     ownerWithdrawals: "/coffee-shop/owner-withdrawals",
     kavappInventory: "/coffee-shop/kavapp-inventory",
     kavappInventoryAlertRules: "/coffee-shop/kavapp-inventory/alert-rules",
+    workspaceSettings: "/settings/workspace",
+    profileSettings: "/settings/profile",
+    plan: "/onboarding/plan",
 } as const;

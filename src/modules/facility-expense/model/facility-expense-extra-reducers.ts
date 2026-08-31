@@ -15,6 +15,7 @@ export const facilityExpenseExtraReducers = (builder: ActionReducerMapBuilder<Fa
         .addCase(getAllFacilityExpenses.pending, (state) => {
             state.loading = true;
             state.error = null;
+            state.data = [];
         })
         .addCase(getAllFacilityExpenses.fulfilled, (state, action: PayloadAction<FacilityExpense[]>) => {
             state.data = action.payload;

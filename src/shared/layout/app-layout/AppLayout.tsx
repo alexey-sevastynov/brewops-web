@@ -4,19 +4,19 @@ import { Sidebar } from "@/shared/layout/sidebar/Sidebar";
 import { Toolbar } from "@/shared/layout/toolbar/Toolbar";
 import { routeKeys } from "@/shared/constants/route-keys";
 import { iconNames } from "@/shared/ui/icon/icon-name";
-import { isAdmin } from "@/shared/utils/permissions";
 
 interface AppLayoutProps {
     children: React.ReactNode;
     userName: string;
     userRole: string;
+    workspaceId?: string;
 }
 
-export function AppLayout({ children, userName, userRole }: AppLayoutProps) {
+export function AppLayout({ children, userName, userRole, workspaceId: _workspaceId }: AppLayoutProps) {
     return (
         <div className="bg-background flex min-h-screen w-full">
             <Sidebar
-                sidebarNavigationItems={getSidebarNavigationItems(userRole)}
+                sidebarNavigationItems={navigationItems}
                 logoIconName={iconNames.hexagon}
             />
             <div className="flex flex-1 flex-col">
@@ -27,26 +27,25 @@ export function AppLayout({ children, userName, userRole }: AppLayoutProps) {
     );
 }
 
-function getSidebarNavigationItems(userRole: string) {
-    if (isAdmin(userRole)) {
-        return [...commonNavigationItems, ...adminOnlyNavigationItems];
-    }
-
-    return commonNavigationItems;
-}
-
-const commonNavigationItems = [
+const navigationItems = [
+    {
+        href: routeKeys.coffeeShop,
+        iconName: iconNames.vault,
+        label: "Кавʼярня",
+    },
+    {
+        href: routeKeys.workspaceSettings,
+        iconName: iconNames.settings,
+        label: "Workspace",
+    },
+    {
+        href: routeKeys.plan,
+        iconName: iconNames.crown,
+        label: "Тариф",
+    },
     {
         href: routeKeys.documentation,
         iconName: iconNames.bookOpen,
         label: "Документація",
-    },
-];
-
-const adminOnlyNavigationItems = [
-    {
-        href: routeKeys.coffeeShop,
-        iconName: iconNames.vault,
-        label: "Кавʼярня Кофеоль",
     },
 ];

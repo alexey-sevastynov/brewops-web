@@ -15,6 +15,7 @@ export const expenseReportExtraReducers = (builder: ActionReducerMapBuilder<Expe
         .addCase(getAllExpenseReports.pending, (state) => {
             state.loading = true;
             state.error = null;
+            state.data = [];
         })
         .addCase(getAllExpenseReports.fulfilled, (state, action: PayloadAction<ExpenseReport[]>) => {
             state.data = action.payload;

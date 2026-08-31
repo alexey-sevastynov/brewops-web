@@ -17,6 +17,7 @@ export const ownerWithdrawalExtraReducers = (
         .addCase(getAllOwnerWithdrawals.pending, (state) => {
             state.loading = true;
             state.error = null;
+            state.data = [];
         })
         .addCase(getAllOwnerWithdrawals.fulfilled, (state, action: PayloadAction<OwnerWithdrawal[]>) => {
             state.data = action.payload;

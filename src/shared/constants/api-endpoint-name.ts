@@ -2,7 +2,6 @@ export const apiEndpointNames = {
     tasks: "/tasks",
     signIn: "/auth/signin",
     signUp: "/auth/signup",
-    signInAsGuest: "/auth/guest",
     forgotPasswordConfirm: "/password-reset/confirm",
     forgotPasswordRequest: "/password-reset/request",
     mailVerification: "/mail-verification/confirm",
@@ -18,4 +17,9 @@ export const apiEndpointNames = {
     kavappSync: "/coffee-shop/kavapp/sync",
     kavappSnapshotsLatest: "/coffee-shop/kavapp/snapshots/latest",
     kavappInventoryAlertRules: "/coffee-shop/kavapp/alert-rules",
+    workspaces: "/workspaces",
 } as const;
+
+export function getWorkspaceCoffeeShopsEndpoint(_workspaceId: string) {
+    return "/coffee-shops";
+}

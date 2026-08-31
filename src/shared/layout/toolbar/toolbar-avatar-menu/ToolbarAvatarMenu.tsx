@@ -23,6 +23,11 @@ export function ToolbarAvatarMenu({ userName, userRole }: ToolbarAvatarMenuProps
     const router = useRouter();
     const dispatch = useAppDispatch();
     const isUserLoading = useAppSelector((state) => state.auth.isLoading);
+    const workspaceName = useAppSelector((state) => {
+        const selectedWorkspaceId = state.workspace.selectedWorkspaceId;
+
+        return state.workspace.workspaces.find(({ _id }) => _id === selectedWorkspaceId)?.name;
+    });
 
     const onLogout = () => {
         dispatch(signOut());
@@ -39,9 +44,17 @@ export function ToolbarAvatarMenu({ userName, userRole }: ToolbarAvatarMenuProps
                     <ToolbarAvatarMenuUserInfo
                         userName={userName}
                         userRole={userRole}
+                        workspaceName={workspaceName}
                         isUserLoading={isUserLoading}
                     />
                     <ToolbarThemeModeSwitcher />
+                    <Button
+                        variant={buttonVariantKeys.secondary}
+                        iconName={iconNames.settings}
+                        className="w-full mb-1"
+                        text="Налаштування"
+                        onClick={() => router.push(routeKeys.profileSettings)}
+                    />
                     <Button
                         variant={buttonVariantKeys.danger}
                         iconName={iconNames.logOut}

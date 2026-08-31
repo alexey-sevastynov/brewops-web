@@ -15,6 +15,7 @@ export const dailyReportExtraReducers = (builder: ActionReducerMapBuilder<DailyR
         .addCase(getAllDailyReports.pending, (state) => {
             state.loading = true;
             state.error = null;
+            state.data = [];
         })
         .addCase(getAllDailyReports.fulfilled, (state, action: PayloadAction<DailyReport[]>) => {
             state.data = action.payload;

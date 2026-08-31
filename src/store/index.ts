@@ -10,6 +10,8 @@ import ownerWithdrawalReducer from "@/modules/owner-withdrawal/model/owner-withd
 import statisticsReducers from "@/modules/statistics/model/statistics-slice";
 import kavappInventoryReducer from "@/modules/kavapp-inventory/model/kavapp-inventory-slice";
 import inventoryAlertRuleReducer from "@/modules/kavapp-inventory-alert-rules/model/inventory-alert-rule-slice";
+import workspaceReducer from "@/modules/workspace/workspace-slice";
+import coffeeShopReducer from "@/modules/coffee-shop/coffee-shop-slice";
 import { toastMiddleware } from "@/toast-middleware";
 
 export const store = configureStore({
@@ -25,6 +27,8 @@ export const store = configureStore({
         statistics: statisticsReducers,
         kavappInventory: kavappInventoryReducer,
         inventoryAlertRules: inventoryAlertRuleReducer,
+        workspace: workspaceReducer,
+        coffeeShop: coffeeShopReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
