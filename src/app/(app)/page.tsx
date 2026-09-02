@@ -1,21 +1,25 @@
-import { Home } from "@/app/(app)/Home";
-import { cookieKeys } from "@/shared/utils/cookie/cookie-key";
-import { getServerCookie } from "@/shared/utils/cookie/cookie-server";
-import { createMetadata } from "@/shared/utils/seo/create-metadata";
-import { JsonLd } from "@/shared/ui/seo/JsonLd";
-import { generateWebApplicationSchema } from "@/shared/utils/seo/shema/web-application";
+"use client";
 
-export const metadata = createMetadata({
-    title: "Головна панель управління",
-});
+import { CoffeeShopEmptyState } from "@/modules/coffee-shop/components/CoffeeShopEmptyState";
+import { CoffeeShopGrid } from "@/modules/coffee-shop/components/CoffeeShopGrid";
+import { WorkspaceEmptyState } from "@/modules/workspace/components/WorkspaceEmptyState";
+import { WorkspaceLoading } from "@/modules/workspace/components/WorkspaceLoading";
+import { useInitializeWorkspace } from "@/modules/workspace/hooks/use-app-home";
 
-export default async function HomePage() {
-    const userName = await getServerCookie(cookieKeys.userName);
+export default function AppHomePage() {
+    const workspaceInitialization = useInitializeWorkspace();
 
-    return (
-        <>
-            <JsonLd schema={generateWebApplicationSchema()} />
-            <Home userName={userName} />
-        </>
-    );
+    if (workspaceInitialization.isLoading && workspaceInitialization.coffeeShops.length === 0) {
+        return <WorkspaceLoading />;
+    }
+
+    if (!workspaceInitialization.selectedWorkspaceId) {
+        return <WorkspaceEmptyState />;
+    }
+
+    if (workspaceInitialization.coffeeShops.length === 0) {
+        return <CoffeeShopEmptyState />;
+    }
+
+    return <CoffeeShopGrid coffeeShops={workspaceInitialization.coffeeShops} />;
 }

@@ -10,9 +10,7 @@ import {
 } from "@/modules/owner-withdrawal/model/owner-withdrawal-thunks";
 import { OwnerWithdrawal } from "@/modules/owner-withdrawal/types/owner-withdrawal";
 
-export const ownerWithdrawalExtraReducers = (
-    builder: ActionReducerMapBuilder<OwnerWithdrawalState>,
-) => {
+export const ownerWithdrawalExtraReducers = (builder: ActionReducerMapBuilder<OwnerWithdrawalState>) => {
     builder
         .addCase(getAllOwnerWithdrawals.pending, (state) => {
             state.loading = true;
@@ -32,7 +30,7 @@ export const ownerWithdrawalExtraReducers = (
             state.data.push(action.payload);
         })
         .addCase(deleteOwnerWithdrawal.fulfilled, (state, action) => {
-            state.data = state.data.filter((withdrawal) => withdrawal._id !== action.meta.arg);
+            state.data = state.data.filter((withdrawal) => withdrawal._id !== action.meta.arg.id);
         })
         .addCase(updateOwnerWithdrawal.fulfilled, (state, action) => {
             const index = state.data.findIndex((withdrawal) => withdrawal._id === action.payload._id);

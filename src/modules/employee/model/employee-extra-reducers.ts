@@ -30,7 +30,7 @@ export const employeeExtraReducers = (builder: ActionReducerMapBuilder<EmployeeS
             state.data.push(action.payload);
         })
         .addCase(deleteEmployee.fulfilled, (state, action) => {
-            state.data = state.data.filter((emp) => emp._id !== action.meta.arg);
+            state.data = state.data.filter((emp) => emp._id !== action.meta.arg.id);
         })
         .addCase(updateEmployee.fulfilled, (state, action) => {
             const index = state.data.findIndex((emp) => emp._id === action.payload._id);

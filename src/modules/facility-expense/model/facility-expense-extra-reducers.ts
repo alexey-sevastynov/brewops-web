@@ -30,7 +30,7 @@ export const facilityExpenseExtraReducers = (builder: ActionReducerMapBuilder<Fa
             state.data.push(action.payload);
         })
         .addCase(deleteFacilityExpense.fulfilled, (state, action) => {
-            state.data = state.data.filter((expense) => expense._id !== action.meta.arg);
+            state.data = state.data.filter((expense) => expense._id !== action.meta.arg.id);
         })
         .addCase(updateFacilityExpense.fulfilled, (state, action) => {
             const index = state.data.findIndex((expense) => expense._id === action.payload._id);

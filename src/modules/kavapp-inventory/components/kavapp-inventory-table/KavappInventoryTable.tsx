@@ -14,6 +14,7 @@ import { useAppSelector } from "@/shared/lib/redux/hooks/use-app-selector";
 import { useResourceTable } from "@/shared/lib/react-table/use-resource-table";
 import { createTableConfig } from "@/shared/lib/react-table/table-config";
 import { Title } from "@/shared/ui/typography/title/Title";
+import { WithCoffeeShopId } from "@/shared/types/with-coffee-shop-id";
 import { TableToolbox } from "@/shared/ui/table-toolbox/TableToolbox";
 import { Table } from "@/shared/ui/table/Table";
 import { TablePager } from "@/shared/ui/table-pager/TablePager";
@@ -34,7 +35,7 @@ import {
     syncKavappInventory,
 } from "@/modules/kavapp-inventory/model/kavapp-inventory-thunks";
 
-export function KavappInventoryTable() {
+export function KavappInventoryTable({ coffeeShopId }: WithCoffeeShopId) {
     const dispatch = useAppDispatch();
     const inventory = useAppSelector((state) => state.kavappInventory.inventory);
     const latestSnapshot = useAppSelector((state) => state.kavappInventory.latestSnapshot);
@@ -46,9 +47,9 @@ export function KavappInventoryTable() {
     );
 
     useEffect(() => {
-        dispatch(getAllKavappInventory(undefined));
-        dispatch(getLatestKavappSnapshot());
-    }, [dispatch]);
+        dispatch(getAllKavappInventory({ coffeeShopId }));
+        dispatch(getLatestKavappSnapshot({ coffeeShopId }));
+    }, [dispatch, coffeeShopId]);
 
     const filteredData: KavappInventoryItem[] = useMemo(() => {
         if (!inventory) return [];
@@ -62,14 +63,14 @@ export function KavappInventoryTable() {
 
     const handleSync = useCallback(async () => {
         try {
-            await dispatch(syncKavappInventory({})).unwrap();
+            await dispatch(syncKavappInventory({ coffeeShopId })).unwrap();
             appToast.success("Синхронізація пройшла успішно");
-            await dispatch(getAllKavappInventory(undefined));
-            await dispatch(getLatestKavappSnapshot());
+            await dispatch(getAllKavappInventory({ coffeeShopId }));
+            await dispatch(getLatestKavappSnapshot({ coffeeShopId }));
         } catch {
             appToast.error("Помилка синхронізації");
         }
-    }, [dispatch]);
+    }, [dispatch, coffeeShopId]);
 
     const resourceTable = useResourceTable<KavappInventoryItem>();
 
@@ -104,6 +105,7 @@ export function KavappInventoryTable() {
                     lastSyncDate={lastSyncDate}
                     isSyncing={isSyncing}
                     onSync={handleSync}
+                    coffeeShopId={coffeeShopId}
                 />
                 <KavappInventoryCategoryTabs
                     activeCategory={activeCategory}

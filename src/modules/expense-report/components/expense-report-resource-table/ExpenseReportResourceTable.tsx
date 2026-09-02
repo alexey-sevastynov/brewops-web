@@ -14,15 +14,16 @@ import {
     updateExpenseReport,
 } from "@/modules/expense-report/model/expense-report-thunks";
 import { useAppSelector } from "@/shared/lib/redux/hooks/use-app-selector";
+import { WithCoffeeShopId } from "@/shared/types/with-coffee-shop-id";
 
-export function ExpenseReportResourceTable() {
+export function ExpenseReportResourceTable({ coffeeShopId }: WithCoffeeShopId) {
     const dispatch = useAppDispatch();
     const reports = useAppSelector((state) => state.expenseReport.data);
     const isLoadingReports = useAppSelector((state) => state.expenseReport.loading);
 
     useEffect(() => {
-        dispatch(getAllExpenseReports());
-    }, [dispatch]);
+        dispatch(getAllExpenseReports(coffeeShopId));
+    }, [dispatch, coffeeShopId]);
 
     return (
         <ResourceTable<ExpenseReport>
@@ -36,16 +37,16 @@ export function ExpenseReportResourceTable() {
             createTitle="Створити звіт про витрати"
             editTitle="Редагувати звіт про витрати"
             deleteConfirmDescription="Ви дійсно хочете видалити цей звіт про витрати?"
-            onCreate={async (report) => {
-                await dispatch(createExpenseReport(report)).unwrap();
-                await dispatch(getAllExpenseReports());
+            onCreate={async (expenseReport) => {
+                await dispatch(createExpenseReport({ coffeeShopId, expenseReport })).unwrap();
+                await dispatch(getAllExpenseReports(coffeeShopId));
             }}
-            onUpdate={async (report) => {
-                await dispatch(updateExpenseReport(report)).unwrap();
-                await dispatch(getAllExpenseReports());
+            onUpdate={async (expenseReport) => {
+                await dispatch(updateExpenseReport({ coffeeShopId, expenseReport })).unwrap();
+                await dispatch(getAllExpenseReports(coffeeShopId));
             }}
             onDelete={async (id) => {
-                await dispatch(deleteExpenseReport(id)).unwrap();
+                await dispatch(deleteExpenseReport({ coffeeShopId, id })).unwrap();
             }}
             exportConfig={{
                 fileName: "expense-reports",

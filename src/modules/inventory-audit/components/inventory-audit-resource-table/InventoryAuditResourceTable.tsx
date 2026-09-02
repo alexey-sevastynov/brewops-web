@@ -14,16 +14,17 @@ import {
 } from "@/modules/inventory-audit/model/inventory-audit-thunks";
 import { useEffect } from "react";
 import { useAppSelector } from "@/shared/lib/redux/hooks/use-app-selector";
+import { WithCoffeeShopId } from "@/shared/types/with-coffee-shop-id";
 
-export function InventoryAuditResourceTable() {
+export function InventoryAuditResourceTable({ coffeeShopId }: WithCoffeeShopId) {
     const dispatch = useAppDispatch();
 
     const audits = useAppSelector((state) => state.inventoryAudit.data);
     const isLoadingAudits = useAppSelector((state) => state.inventoryAudit.loading);
 
     useEffect(() => {
-        dispatch(getAllInventoryAudits());
-    }, [dispatch]);
+        dispatch(getAllInventoryAudits(coffeeShopId));
+    }, [dispatch, coffeeShopId]);
 
     return (
         <ResourceTable<InventoryAudit>
@@ -38,16 +39,16 @@ export function InventoryAuditResourceTable() {
             editTitle="Редагувати аудит інвентаризації"
             deleteConfirmDescription="Ви дійсно хочете видалити цей аудит інвентаризації?"
             stickyHeader={true}
-            onCreate={async (audit) => {
-                await dispatch(createInventoryAudit(audit)).unwrap();
-                await dispatch(getAllInventoryAudits());
+            onCreate={async (inventoryAudit) => {
+                await dispatch(createInventoryAudit({ coffeeShopId, inventoryAudit })).unwrap();
+                await dispatch(getAllInventoryAudits(coffeeShopId));
             }}
-            onUpdate={async (audit) => {
-                await dispatch(updateInventoryAudit(audit)).unwrap();
-                await dispatch(getAllInventoryAudits());
+            onUpdate={async (inventoryAudit) => {
+                await dispatch(updateInventoryAudit({ coffeeShopId, inventoryAudit })).unwrap();
+                await dispatch(getAllInventoryAudits(coffeeShopId));
             }}
             onDelete={async (id) => {
-                await dispatch(deleteInventoryAudit(id)).unwrap();
+                await dispatch(deleteInventoryAudit({ coffeeShopId, id })).unwrap();
             }}
             exportConfig={{
                 fileName: "inventory-audits",

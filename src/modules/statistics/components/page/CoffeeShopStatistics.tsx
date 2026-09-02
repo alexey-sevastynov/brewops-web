@@ -3,18 +3,19 @@
 import { useEffect, useState } from "react";
 import { useAppDispatch } from "@/shared/lib/redux/hooks/use-app-dispatch";
 import { useAppSelector } from "@/shared/lib/redux/hooks/use-app-selector";
-import { getAllEmployees } from "@/modules/employee/model/employee-thunks";
-import { getAllDailyReports } from "@/modules/daily-report/model/daily-report-thunks";
-import { getCoffeeShopStatistics } from "@/modules/statistics/model/statistics-thunks";
 import { RangeDatePicker } from "@/shared/ui/date-picker/RangeDatePicker";
 import { DateRange } from "@/shared/types/date-range/date-range-type";
 import { initializeDateRangeFromDailyReports } from "@/modules/statistics/components/page/coffeeShopStatistics.funcs";
-import { StatisticsDashboard } from "@/modules/statistics/components/page/statistics-dashboard/StatisticsDashboard";
 import { LoadingIndicator } from "@/shared/ui/loading-indicator/LoadingIndicator";
 import { textPositions } from "@/shared/ui/typography/text-position";
 import { Title } from "@/shared/ui/typography/title/Title";
+import { WithCoffeeShopId } from "@/shared/types/with-coffee-shop-id";
+import { getAllEmployees } from "@/modules/employee/model/employee-thunks";
+import { getCoffeeShopStatistics } from "@/modules/statistics/model/statistics-thunks";
+import { getAllDailyReports } from "@/modules/daily-report/model/daily-report-thunks";
+import { StatisticsDashboard } from "@/modules/statistics/components/page/statistics-dashboard/StatisticsDashboard";
 
-export function CoffeeShopStatistics() {
+export function CoffeeShopStatistics({ coffeeShopId }: WithCoffeeShopId) {
     const dispatch = useAppDispatch();
     const dailyReports = useAppSelector((state) => state.dailyReport.data);
     const dailyReportLoading = useAppSelector((state) => state.dailyReport.loading);
@@ -25,9 +26,9 @@ export function CoffeeShopStatistics() {
     const [isAutoInitialized, setIsAutoInitialized] = useState(false);
 
     useEffect(() => {
-        dispatch(getAllEmployees());
-        dispatch(getAllDailyReports());
-    }, [dispatch]);
+        dispatch(getAllEmployees(coffeeShopId));
+        dispatch(getAllDailyReports(coffeeShopId));
+    }, [dispatch, coffeeShopId]);
 
     useEffect(() => {
         if (isAutoInitialized) return;
@@ -42,9 +43,14 @@ export function CoffeeShopStatistics() {
 
     useEffect(() => {
         if (dateRange.from && dateRange.to) {
-            dispatch(getCoffeeShopStatistics(dateRange));
+            dispatch(
+                getCoffeeShopStatistics({
+                    coffeeShopId,
+                    dateRange,
+                }),
+            );
         }
-    }, [dateRange, dispatch]);
+    }, [dateRange, coffeeShopId, dispatch]);
 
     const isInitialLoading = dailyReportLoading || (!isAutoInitialized && !dailyReports.length);
     const highlightDates = dailyReports.map((report) => new Date(report.date));

@@ -1,7 +1,11 @@
+"use client";
+
+import { usePathname } from "next/navigation";
 import { cn } from "@/shared/lib/cn";
 import { InvertedCorner } from "@/shared/layout/toolbar/inverted-corner/InvertedCorner";
 import { ToolbarAvatarMenu } from "@/shared/layout/toolbar/toolbar-avatar-menu/ToolbarAvatarMenu";
-import { WorkspaceContextSwitcher } from "@/modules/workspace/components/WorkspaceContextSwitcher";
+import { useAppSelector } from "@/shared/lib/redux/hooks/use-app-selector";
+import { Text } from "@/shared/ui/typography/text/Text";
 
 interface ToolbarProps {
     className?: string;
@@ -9,7 +13,21 @@ interface ToolbarProps {
     userRole?: string;
 }
 
+function isCoffeeShopPath(pathname: string) {
+    return pathname.startsWith("/coffee-shop/");
+}
+
 export function Toolbar({ className, userName, userRole }: ToolbarProps) {
+    const pathname = usePathname();
+    const selectedCoffeeShopName = useAppSelector((state) => {
+        if (!isCoffeeShopPath(pathname)) return null;
+
+        return (
+            state.coffeeShop.coffeeShops.find((shop) => shop._id === state.coffeeShop.selectedCoffeeShopId)
+                ?.name ?? null
+        );
+    });
+
     return (
         <header
             className={cn(
@@ -18,7 +36,7 @@ export function Toolbar({ className, userName, userRole }: ToolbarProps) {
             )}
         >
             <InvertedCorner className="absolute top-full left-0" fillColor="fill-sidebar" />
-            <WorkspaceContextSwitcher />
+            {selectedCoffeeShopName ? <Text> {selectedCoffeeShopName}</Text> : null}
             <ToolbarAvatarMenu userName={userName} userRole={userRole} />
         </header>
     );

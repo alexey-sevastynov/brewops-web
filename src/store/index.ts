@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import taskReducer from "@/modules/task/model/slice";
 import authReducer from "@/modules/auth/model/slice";
 import employeeReducer from "@/modules/employee/model/employee-slice";
 import dailyReportReducer from "@/modules/daily-report/model/daily-report-slice";
@@ -16,7 +15,6 @@ import { toastMiddleware } from "@/toast-middleware";
 
 export const store = configureStore({
     reducer: {
-        task: taskReducer,
         auth: authReducer,
         employee: employeeReducer,
         dailyReport: dailyReportReducer,

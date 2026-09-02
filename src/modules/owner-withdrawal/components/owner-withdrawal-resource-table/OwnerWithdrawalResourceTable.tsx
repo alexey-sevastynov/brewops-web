@@ -1,33 +1,34 @@
 "use client";
 
+import { useEffect } from "react";
+import { WithCoffeeShopId } from "@/shared/types/with-coffee-shop-id";
+import { useAppDispatch } from "@/shared/lib/redux/hooks/use-app-dispatch";
+import { ResourceTable } from "@/shared/ui/resource-table/ResourceTable";
+import { getTodayDate } from "@/shared/utils/date";
+import { useAppSelector } from "@/shared/lib/redux/hooks/use-app-selector";
 import { OwnerWithdrawal } from "@/modules/owner-withdrawal/types/owner-withdrawal";
 import { createOwnerWithdrawalActionsColumn } from "@/modules/owner-withdrawal/configs/owner-withdrawal-actions";
 import { ownerWithdrawalColumns } from "@/modules/owner-withdrawal/configs/owner-withdrawal-columns";
-import { useAppDispatch } from "@/shared/lib/redux/hooks/use-app-dispatch";
 import { ownerWithdrawalFormFields } from "@/modules/owner-withdrawal/configs/owner-withdrawal-form-fields";
-import { ResourceTable } from "@/shared/ui/resource-table/ResourceTable";
 import {
     createOwnerWithdrawal,
     deleteOwnerWithdrawal,
     getAllOwnerWithdrawals,
     updateOwnerWithdrawal,
 } from "@/modules/owner-withdrawal/model/owner-withdrawal-thunks";
-import { getTodayDate } from "@/shared/utils/date";
-import { useEffect } from "react";
-import { useAppSelector } from "@/shared/lib/redux/hooks/use-app-selector";
 
 const defaultOwnerWithdrawalValues: Partial<OwnerWithdrawal> = {
     withdrawalDate: getTodayDate(),
 } as const;
 
-export function OwnerWithdrawalResourceTable() {
+export function OwnerWithdrawalResourceTable({ coffeeShopId }: WithCoffeeShopId) {
     const dispatch = useAppDispatch();
     const withdrawals = useAppSelector((state) => state.ownerWithdrawal.data);
     const isLoadingWithdrawals = useAppSelector((state) => state.ownerWithdrawal.loading);
 
     useEffect(() => {
-        dispatch(getAllOwnerWithdrawals());
-    }, [dispatch]);
+        dispatch(getAllOwnerWithdrawals(coffeeShopId));
+    }, [dispatch, coffeeShopId]);
 
     return (
         <ResourceTable<OwnerWithdrawal>
@@ -43,15 +44,32 @@ export function OwnerWithdrawalResourceTable() {
             deleteConfirmDescription="Ви дійсно хочете видалити це виведення коштів?"
             defaultValues={defaultOwnerWithdrawalValues}
             onCreate={async (withdrawal) => {
-                await dispatch(createOwnerWithdrawal(withdrawal)).unwrap();
-                await dispatch(getAllOwnerWithdrawals());
+                await dispatch(
+                    createOwnerWithdrawal({
+                        coffeeShopId,
+                        withdrawal,
+                    }),
+                ).unwrap();
+
+                await dispatch(getAllOwnerWithdrawals(coffeeShopId));
             }}
             onUpdate={async (withdrawal) => {
-                await dispatch(updateOwnerWithdrawal(withdrawal)).unwrap();
-                await dispatch(getAllOwnerWithdrawals());
+                await dispatch(
+                    updateOwnerWithdrawal({
+                        coffeeShopId,
+                        withdrawal,
+                    }),
+                ).unwrap();
+
+                await dispatch(getAllOwnerWithdrawals(coffeeShopId));
             }}
             onDelete={async (id) => {
-                await dispatch(deleteOwnerWithdrawal(id)).unwrap();
+                await dispatch(
+                    deleteOwnerWithdrawal({
+                        coffeeShopId,
+                        id,
+                    }),
+                ).unwrap();
             }}
             exportConfig={{
                 fileName: "owner-withdrawals",

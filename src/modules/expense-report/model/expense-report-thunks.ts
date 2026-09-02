@@ -8,57 +8,73 @@ import { ExpenseReport } from "@/modules/expense-report/types/expense-report";
 
 type CreateExpenseReportDto = Omit<ExpenseReport, "_id">;
 
-export const getAllExpenseReports = createAsyncThunk<ExpenseReport[], void, { rejectValue: AxiosError }>(
+interface CreateExpenseReportPayload {
+    coffeeShopId: string;
+    expenseReport: CreateExpenseReportDto;
+}
+interface UpdateExpenseReportPayload {
+    coffeeShopId: string;
+    expenseReport: ExpenseReport;
+}
+interface DeleteExpenseReportPayload {
+    coffeeShopId: string;
+    id: string;
+}
+
+export const getAllExpenseReports = createAsyncThunk<ExpenseReport[], string, { rejectValue: AxiosError }>(
     "allExpenseReport",
-    async () => {
-        const allExpenseReport = await getAll<ExpenseReport>(apiEndpointNames.expenseReport);
+    async (coffeeShopId) => {
+        const allExpenseReports = await getAll<ExpenseReport>(apiEndpointNames.expenseReports(coffeeShopId));
 
-        return allExpenseReport;
+        return allExpenseReports;
     },
 );
 
-export const createExpenseReport = createAsyncThunk<ExpenseReport, ExpenseReport, WithRejectValue>(
-    "createExpenseReport",
-    async (expenseReport: CreateExpenseReportDto, { rejectWithValue }) => {
-        try {
-            const response = await createOne<CreateExpenseReportDto, ExpenseReport>(
-                apiEndpointNames.expenseReport,
-                expenseReport,
-            );
+export const createExpenseReport = createAsyncThunk<
+    ExpenseReport,
+    CreateExpenseReportPayload,
+    WithRejectValue
+>("createExpenseReport", async ({ coffeeShopId, expenseReport }, { rejectWithValue }) => {
+    try {
+        const response = await createOne<CreateExpenseReportDto, ExpenseReport>(
+            apiEndpointNames.expenseReports(coffeeShopId),
+            expenseReport,
+        );
 
-            return response;
-        } catch (error: unknown) {
-            return rejectWithValue(convertToApiError(error));
-        }
-    },
-);
+        return response;
+    } catch (error: unknown) {
+        return rejectWithValue(convertToApiError(error));
+    }
+});
 
-export const deleteExpenseReport = createAsyncThunk<ExpenseReport, string, WithRejectValue>(
-    "deleteExpenseReport",
-    async (_id: string, { rejectWithValue }) => {
-        try {
-            const response = await deleteOne<ExpenseReport>(apiEndpointNames.expenseReport, _id);
+export const deleteExpenseReport = createAsyncThunk<
+    ExpenseReport,
+    DeleteExpenseReportPayload,
+    WithRejectValue
+>("deleteExpenseReport", async ({ coffeeShopId, id }, { rejectWithValue }) => {
+    try {
+        const response = await deleteOne<ExpenseReport>(apiEndpointNames.expenseReports(coffeeShopId), id);
 
-            return response;
-        } catch (error: unknown) {
-            return rejectWithValue(convertToApiError(error));
-        }
-    },
-);
+        return response;
+    } catch (error: unknown) {
+        return rejectWithValue(convertToApiError(error));
+    }
+});
 
-export const updateExpenseReport = createAsyncThunk<ExpenseReport, ExpenseReport, WithRejectValue>(
-    "updateExpenseReport",
-    async (expenseReport: ExpenseReport, { rejectWithValue }) => {
-        try {
-            const response = await updateOne<ExpenseReport>(
-                apiEndpointNames.expenseReport,
-                expenseReport._id,
-                expenseReport,
-            );
+export const updateExpenseReport = createAsyncThunk<
+    ExpenseReport,
+    UpdateExpenseReportPayload,
+    WithRejectValue
+>("updateExpenseReport", async ({ coffeeShopId, expenseReport }, { rejectWithValue }) => {
+    try {
+        const response = await updateOne<ExpenseReport>(
+            apiEndpointNames.expenseReports(coffeeShopId),
+            expenseReport._id,
+            expenseReport,
+        );
 
-            return response;
-        } catch (error: unknown) {
-            return rejectWithValue(convertToApiError(error));
-        }
-    },
-);
+        return response;
+    } catch (error: unknown) {
+        return rejectWithValue(convertToApiError(error));
+    }
+});

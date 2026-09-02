@@ -23,14 +23,16 @@ export const dailyReportExtraReducers = (builder: ActionReducerMapBuilder<DailyR
         })
         .addCase(getAllDailyReports.rejected, (state, action) => {
             state.loading = false;
+
             const error = action.payload as ApiError | undefined;
+
             state.error = error ? createApiError(error.statusCode, error.message) : null;
         })
         .addCase(createDailyReport.fulfilled, (state, action) => {
             state.data.push(action.payload);
         })
         .addCase(deleteDailyReport.fulfilled, (state, action) => {
-            state.data = state.data.filter((report) => report._id !== action.meta.arg);
+            state.data = state.data.filter((report) => report._id !== action.meta.arg.id);
         })
         .addCase(updateDailyReport.fulfilled, (state, action) => {
             const index = state.data.findIndex((report) => report._id === action.payload._id);

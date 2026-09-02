@@ -58,7 +58,7 @@ const coffeeShopSlice = createSlice({
                 state.isLoading = false;
 
                 if (!action.payload.some(({ _id }) => _id === state.selectedCoffeeShopId)) {
-                    state.selectedCoffeeShopId = action.payload[0]?._id ?? null;
+                    state.selectedCoffeeShopId = null;
                 }
             })
             .addCase(getCoffeeShops.rejected, (state, action) => {

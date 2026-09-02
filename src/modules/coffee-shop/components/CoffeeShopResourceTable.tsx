@@ -24,8 +24,12 @@ import { ModalWindow } from "@/shared/ui/modal-window/ModalWindow";
 import { MRInput } from "@/shared/ui/input/Input";
 import { ShieldAlert } from "lucide-react";
 
+interface CoffeeShopResourceTableProps {
+    title?: string;
+}
+
 // eslint-disable-next-line max-lines-per-function
-export function CoffeeShopResourceTable() {
+export function CoffeeShopResourceTable({ title = "Кавʼярні" }: CoffeeShopResourceTableProps) {
     const dispatch = useAppDispatch();
     const router = useRouter();
     const workspaceId = useAppSelector((state) => state.workspace.selectedWorkspaceId);
@@ -74,7 +78,7 @@ export function CoffeeShopResourceTable() {
             )}
 
             <ResourceTable<CoffeeShop>
-                title="Кавʼярні workspace"
+                title={title}
                 data={coffeeShops}
                 isLoading={isLoading}
                 columns={coffeeShopColumns}

@@ -51,7 +51,7 @@ const inventoryAlertRuleSlice = createSlice({
                 }
             })
             .addCase(deleteInventoryAlertRule.fulfilled, (state, action) => {
-                state.data = state.data.filter(({ _id }) => _id !== action.meta.arg);
+                state.data = state.data.filter(({ _id }) => _id !== action.meta.arg.id);
             });
     },
 });

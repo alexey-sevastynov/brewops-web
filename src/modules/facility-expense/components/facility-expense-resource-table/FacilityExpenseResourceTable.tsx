@@ -15,6 +15,7 @@ import {
 import { getTodayDate } from "@/shared/utils/date";
 import { useEffect } from "react";
 import { useAppSelector } from "@/shared/lib/redux/hooks/use-app-selector";
+import { WithCoffeeShopId } from "@/shared/types/with-coffee-shop-id";
 
 const defaultFacilityExpenseValues: Partial<FacilityExpense> = {
     date: getTodayDate(),
@@ -23,14 +24,14 @@ const defaultFacilityExpenseValues: Partial<FacilityExpense> = {
     amount: 350,
 } as const;
 
-export function FacilityExpenseResourceTable() {
+export function FacilityExpenseResourceTable({ coffeeShopId }: WithCoffeeShopId) {
     const dispatch = useAppDispatch();
     const expenses = useAppSelector((state) => state.facilityExpense.data);
     const isLoadingExpenses = useAppSelector((state) => state.facilityExpense.loading);
 
     useEffect(() => {
-        dispatch(getAllFacilityExpenses());
-    }, [dispatch]);
+        dispatch(getAllFacilityExpenses(coffeeShopId));
+    }, [dispatch, coffeeShopId]);
 
     return (
         <ResourceTable<FacilityExpense>
@@ -47,15 +48,15 @@ export function FacilityExpenseResourceTable() {
             defaultValues={defaultFacilityExpenseValues}
             stickyHeader={true}
             onCreate={async (expense) => {
-                await dispatch(createFacilityExpense(expense)).unwrap();
-                await dispatch(getAllFacilityExpenses());
+                await dispatch(createFacilityExpense({ coffeeShopId, expense })).unwrap();
+                await dispatch(getAllFacilityExpenses(coffeeShopId));
             }}
             onUpdate={async (expense) => {
-                await dispatch(updateFacilityExpense(expense)).unwrap();
-                await dispatch(getAllFacilityExpenses());
+                await dispatch(updateFacilityExpense({ coffeeShopId, expense })).unwrap();
+                await dispatch(getAllFacilityExpenses(coffeeShopId));
             }}
             onDelete={async (id) => {
-                await dispatch(deleteFacilityExpense(id)).unwrap();
+                await dispatch(deleteFacilityExpense({ coffeeShopId, id })).unwrap();
             }}
             exportConfig={{
                 fileName: "facility-expenses",

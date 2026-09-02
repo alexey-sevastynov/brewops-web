@@ -21,7 +21,11 @@ import {
     prepareRulePayload,
 } from "@/modules/kavapp-inventory-alert-rules/components/inventoryAlertRuleResourceTable.funcs";
 
-export function InventoryAlertRuleResourceTable() {
+interface InventoryAlertRuleResourceTableProps {
+    coffeeShopId: string;
+}
+
+export function InventoryAlertRuleResourceTable({ coffeeShopId }: InventoryAlertRuleResourceTableProps) {
     const dispatch = useAppDispatch();
     const inventoryAlertRules = useAppSelector((state) => state.inventoryAlertRules.data);
     const isLoading = useAppSelector((state) => state.inventoryAlertRules.loading);
@@ -33,9 +37,9 @@ export function InventoryAlertRuleResourceTable() {
     );
 
     useEffect(() => {
-        dispatch(getAllInventoryAlertRules());
-        fetchKavappCatalog().then(setKavappCatalogItems);
-    }, [dispatch]);
+        dispatch(getAllInventoryAlertRules(coffeeShopId));
+        fetchKavappCatalog(coffeeShopId).then(setKavappCatalogItems);
+    }, [dispatch, coffeeShopId]);
 
     return (
         <ResourceTable<InventoryAlertRule>
@@ -52,19 +56,28 @@ export function InventoryAlertRuleResourceTable() {
             stickyHeader={true}
             onCreate={async (values) => {
                 await dispatch(
-                    createInventoryAlertRule(prepareRulePayload(values, kavappCatalogItems)),
+                    createInventoryAlertRule({
+                        coffeeShopId,
+                        payload: prepareRulePayload(values, kavappCatalogItems),
+                    }),
                 ).unwrap();
             }}
             onUpdate={async (values) => {
                 await dispatch(
                     updateInventoryAlertRule({
-                        ...values,
-                        ...prepareRulePayload(values, kavappCatalogItems),
+                        coffeeShopId,
+                        id: values._id,
+                        payload: prepareRulePayload(values, kavappCatalogItems),
                     }),
                 ).unwrap();
             }}
             onDelete={async (id) => {
-                await dispatch(deleteInventoryAlertRule(id)).unwrap();
+                await dispatch(
+                    deleteInventoryAlertRule({
+                        coffeeShopId,
+                        id,
+                    }),
+                ).unwrap();
             }}
             exportConfig={{ fileName: "inventory-alert-rules", sheetName: "Правила сповіщень" }}
         />

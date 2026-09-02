@@ -31,6 +31,12 @@ export function TablePager(props: TablePagerProps) {
         onPageSizeChange,
     } = props;
 
+    const hasData = totalRows > 0;
+
+    if (!hasData) {
+        return null;
+    }
+
     return (
         <div
             className={cn(

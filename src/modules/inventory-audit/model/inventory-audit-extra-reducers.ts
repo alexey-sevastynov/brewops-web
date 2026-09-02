@@ -30,7 +30,7 @@ export const inventoryAuditExtraReducers = (builder: ActionReducerMapBuilder<Inv
             state.data.push(action.payload);
         })
         .addCase(deleteInventoryAudit.fulfilled, (state, action) => {
-            state.data = state.data.filter((audit) => audit._id !== action.meta.arg);
+            state.data = state.data.filter((audit) => audit._id !== action.meta.arg.id);
         })
         .addCase(updateInventoryAudit.fulfilled, (state, action) => {
             const index = state.data.findIndex((audit) => audit._id === action.payload._id);
