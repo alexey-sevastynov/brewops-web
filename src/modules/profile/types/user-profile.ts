@@ -1,17 +1,17 @@
-import { BaseResource } from "@/shared/types/base-resource";
 import { UserStatusKey } from "@/modules/auth/enums/user-status-key";
-import { Address } from "@/modules/auth/types/address";
 
-export interface User extends BaseResource {
+export interface UserProfile {
+    _id: string;
     userId: string;
     userName: string;
     email: string;
-    password: string;
+    password?: string;
     userStatus: UserStatusKey;
     isVerified: boolean;
-    addresses?: Address[];
     blockReason?: string;
     firstName?: string;
     lastName?: string;
     phoneNumber?: string;
+    createdAt?: string;
+    updatedAt?: string;
 }

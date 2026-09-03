@@ -11,9 +11,18 @@ import { exportTableToExcel } from "@/shared/lib/react-table/export/export-table
 interface TableToolboxProps<TData> {
     reactTable: Table<TData>;
     children?: React.ReactNode;
+    showExport?: boolean;
+    showFilters?: boolean;
+    showColumnVisibility?: boolean;
 }
 
-export function TableToolbox<TData>({ reactTable, children }: TableToolboxProps<TData>) {
+export function TableToolbox<TData>({
+    reactTable,
+    children,
+    showExport = true,
+    showFilters = true,
+    showColumnVisibility = true,
+}: TableToolboxProps<TData>) {
     const columns = reactTable.getAllColumns();
     const hasData = reactTable.getFilteredRowModel().rows.length > 0;
 
@@ -21,13 +30,13 @@ export function TableToolbox<TData>({ reactTable, children }: TableToolboxProps<
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             {hasData && (
                 <div className="flex flex-wrap items-center gap-3">
-                    <TableFilterDropdown columns={columns} />
-                    <TableColumnVisibilityDropdown columns={columns} />
+                    {showFilters && <TableFilterDropdown columns={columns} />}
+                    {showColumnVisibility && <TableColumnVisibilityDropdown columns={columns} />}
                 </div>
             )}
 
             <div className="flex flex-wrap items-center gap-3">
-                {hasData && (
+                {hasData && showExport && (
                     <Dropdown>
                         <DropdownTrigger>
                             <Button

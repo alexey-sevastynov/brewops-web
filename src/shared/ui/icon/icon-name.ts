@@ -57,6 +57,7 @@ export const iconNames = {
     crown: "crown",
     package: "package",
     refreshCw: "refreshCw",
+    store: "store",
 } as const;
 
 export type IconName = (typeof iconNames)[keyof typeof iconNames];

@@ -10,13 +10,8 @@ interface ProtectedLayoutProps {
 
 export default async function Layout({ children }: ProtectedLayoutProps) {
     const userName = await getServerCookie(cookieKeys.userName);
-    const userRole = await getServerCookie(cookieKeys.userRole);
 
-    if (!userName || !userRole) throw new Error("User data is missing.");
+    if (!userName) throw new Error("User data is missing.");
 
-    return (
-        <AppLayout userName={userName} userRole={userRole}>
-            {children}
-        </AppLayout>
-    );
+    return <AppLayout userName={userName}>{children}</AppLayout>;
 }

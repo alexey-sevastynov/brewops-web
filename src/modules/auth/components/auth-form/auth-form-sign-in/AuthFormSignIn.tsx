@@ -33,7 +33,7 @@ export function AuthFormSignIn({ authMode }: { authMode: AuthModeKey }) {
         const response = await login(dispatch, data);
 
         if (response.meta.requestStatus === "fulfilled") {
-            replaceRoute(router, routeKeys.plan);
+            replaceRoute(router, routeKeys.home);
         }
     };
 

@@ -1,4 +1,4 @@
-import { ActionReducerMapBuilder, PayloadAction } from "@reduxjs/toolkit";
+import { ActionReducerMapBuilder } from "@reduxjs/toolkit";
 import { EmployeeState } from "@/modules/employee/model/employee-slice";
 import { ApiError } from "@/shared/types/api-error/api-error-type";
 import { createApiError } from "@/shared/lib/api-error";
@@ -8,7 +8,6 @@ import {
     getAllEmployees,
     updateEmployee,
 } from "@/modules/employee/model/employee-thunks";
-import { Employee } from "@/modules/employee/types/employee";
 
 export const employeeExtraReducers = (builder: ActionReducerMapBuilder<EmployeeState>) => {
     builder
@@ -17,12 +16,14 @@ export const employeeExtraReducers = (builder: ActionReducerMapBuilder<EmployeeS
             state.error = null;
             state.data = [];
         })
-        .addCase(getAllEmployees.fulfilled, (state, action: PayloadAction<Employee[]>) => {
+        .addCase(getAllEmployees.fulfilled, (state, action) => {
             state.data = action.payload;
+            state.coffeeShopId = action.meta.arg;
             state.loading = false;
         })
         .addCase(getAllEmployees.rejected, (state, action) => {
             state.loading = false;
+            state.coffeeShopId = action.meta.arg;
             const error = action.payload as ApiError | undefined;
             state.error = error ? createApiError(error.statusCode, error.message) : null;
         })

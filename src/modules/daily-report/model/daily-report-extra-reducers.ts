@@ -1,4 +1,4 @@
-import { ActionReducerMapBuilder, PayloadAction } from "@reduxjs/toolkit";
+import { ActionReducerMapBuilder } from "@reduxjs/toolkit";
 import { DailyReportState } from "@/modules/daily-report/model/daily-report-slice";
 import { ApiError } from "@/shared/types/api-error/api-error-type";
 import { createApiError } from "@/shared/lib/api-error";
@@ -8,7 +8,6 @@ import {
     getAllDailyReports,
     updateDailyReport,
 } from "@/modules/daily-report/model/daily-report-thunks";
-import { DailyReport } from "@/modules/daily-report/types/daily-report";
 
 export const dailyReportExtraReducers = (builder: ActionReducerMapBuilder<DailyReportState>) => {
     builder
@@ -17,12 +16,14 @@ export const dailyReportExtraReducers = (builder: ActionReducerMapBuilder<DailyR
             state.error = null;
             state.data = [];
         })
-        .addCase(getAllDailyReports.fulfilled, (state, action: PayloadAction<DailyReport[]>) => {
+        .addCase(getAllDailyReports.fulfilled, (state, action) => {
             state.data = action.payload;
+            state.coffeeShopId = action.meta.arg;
             state.loading = false;
         })
         .addCase(getAllDailyReports.rejected, (state, action) => {
             state.loading = false;
+            state.coffeeShopId = action.meta.arg;
 
             const error = action.payload as ApiError | undefined;
 

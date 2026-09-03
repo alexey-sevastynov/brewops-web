@@ -5,12 +5,14 @@ import { employeeExtraReducers } from "@/modules/employee/model/employee-extra-r
 
 export interface EmployeeState {
     data: Employee[];
+    coffeeShopId: string | null;
     loading: boolean;
     error: ApiError | null;
 }
 
 const initialState: EmployeeState = {
     data: [],
+    coffeeShopId: null,
     loading: false,
     error: null,
 };

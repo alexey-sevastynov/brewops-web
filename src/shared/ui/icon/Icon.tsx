@@ -59,6 +59,7 @@ import {
     Crown,
     Package,
     RefreshCw,
+    Store,
 } from "lucide-react";
 import { IconColor, iconColors } from "@/shared/ui/icon/icon-color";
 import { IconName, iconNames } from "@/shared/ui/icon/icon-name";
@@ -132,6 +133,7 @@ const iconMap: Record<IconName, ComponentType<IconComponentProps>> = {
     crown: Crown,
     package: Package,
     refreshCw: RefreshCw,
+    store: Store,
 } as const;
 
 interface IconProps {

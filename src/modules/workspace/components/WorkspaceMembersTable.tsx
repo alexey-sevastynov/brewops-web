@@ -4,7 +4,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Shield, Mail, ShieldAlert, X } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
+import { ColumnDef } from "@tanstack/react-table";
 import { useAppSelector } from "@/shared/lib/redux/hooks/use-app-selector";
 import { apiClient } from "@/shared/lib/axios";
 import { Button } from "@/shared/ui/button/Button";
@@ -13,6 +14,8 @@ import { MRInput } from "@/shared/ui/input/Input";
 import { Select } from "@/shared/ui/select/Select";
 import { ModalWindow } from "@/shared/ui/modal-window/ModalWindow";
 import { Badge } from "@/shared/ui/badge/Badge";
+import { resourceFieldTypes } from "@/shared/enums/resource-field-type";
+import { iconNames } from "@/shared/ui/icon/icon-name";
 import { ResourceTable } from "@/shared/ui/resource-table/ResourceTable";
 import {
     workspaceMemberColumns,
@@ -27,6 +30,54 @@ interface WorkspaceInvitation {
     role: string;
     permissions: string[];
     status: string;
+}
+
+const invitationColumns: ColumnDef<WorkspaceInvitation>[] = [
+    {
+        accessorKey: "email",
+        header: "Email",
+        meta: { label: "Email", resourceFieldType: resourceFieldTypes.text, filterable: true },
+    },
+    {
+        accessorKey: "role",
+        header: "Роль",
+        cell: ({ getValue }) => getRoleBadge(getValue<string>()),
+        meta: { label: "Роль", resourceFieldType: resourceFieldTypes.text, filterable: true },
+    },
+    {
+        accessorKey: "status",
+        header: "Статус",
+        cell: () => (
+            <Badge color="bg-yellow-500/10" textColor="text-yellow-500">
+                Надіслано
+            </Badge>
+        ),
+        meta: { label: "Статус", resourceFieldType: resourceFieldTypes.text, filterable: true },
+    },
+];
+
+function createInvitationActionsColumn(
+    onDelete: (id: string) => void,
+    onEdit: (invitation: WorkspaceInvitation) => void,
+) {
+    return {
+        id: "actions",
+        header: "Дії",
+        cell: ({ row }: { row: { original: WorkspaceInvitation } }) => (
+            <div className="flex justify-end gap-2">
+                <Button iconName={iconNames.edit} onClick={() => onEdit(row.original)} />
+                <Button
+                    iconName={iconNames.trash}
+                    variant={buttonVariantKeys.danger}
+                    onClick={() => onDelete(row.original._id)}
+                />
+            </div>
+        ),
+        size: 100,
+        enableSorting: false,
+        enableResizing: false,
+        enableHiding: false,
+    } satisfies ColumnDef<WorkspaceInvitation>;
 }
 
 const RESOURCES = [
@@ -52,6 +103,12 @@ export function WorkspaceMembersTable() {
     const [invitePermissions, setInvitePermissions] = useState<string[]>([]);
     const [inviteLoading, setInviteLoading] = useState(false);
     const [inviteError, setInviteError] = useState("");
+    const [editingInvitation, setEditingInvitation] = useState<WorkspaceInvitation | null>(null);
+    const [isInvitationEditOpen, setIsInvitationEditOpen] = useState(false);
+    const [invitationEditEmail, setInvitationEditEmail] = useState("");
+    const [invitationEditRole, setInvitationEditRole] = useState<"admin" | "manager" | "barista">("barista");
+    const [invitationEditPermissions, setInvitationEditPermissions] = useState<string[]>([]);
+    const [invitationEditLoading, setInvitationEditLoading] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [editingMember, setEditingMember] = useState<WorkspaceMember | null>(null);
     const [editRole, setEditRole] = useState<"admin" | "manager" | "barista">("barista");
@@ -118,6 +175,37 @@ export function WorkspaceMembersTable() {
         }
     };
 
+    const handleUpdateInvitation = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!workspaceId || !editingInvitation) return;
+
+        setInvitationEditLoading(true);
+
+        try {
+            await apiClient.patch(`/workspaces/${workspaceId}/invitations/${editingInvitation._id}`, {
+                email: invitationEditEmail,
+                role: invitationEditRole,
+                permissions: invitationEditRole === "barista" ? invitationEditPermissions : [],
+            });
+            setIsInvitationEditOpen(false);
+            setEditingInvitation(null);
+            fetchData();
+        } catch (error) {
+            console.error("Failed to update invitation", error);
+        } finally {
+            setInvitationEditLoading(false);
+        }
+    };
+
+    const openInvitationEditModal = (invitation: WorkspaceInvitation) => {
+        setEditingInvitation(invitation);
+        setInvitationEditEmail(invitation.email);
+        setInvitationEditRole(invitation.role as "admin" | "manager" | "barista");
+        setInvitationEditPermissions(invitation.permissions || []);
+        setIsInvitationEditOpen(true);
+    };
+
     const handleUpdateMember = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -181,27 +269,7 @@ export function WorkspaceMembersTable() {
     if (!workspaceId) return null;
 
     return (
-        <div className="border-border bg-card space-y-8 rounded-xl border p-6 shadow-sm">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <h2 className="flex items-center gap-2 text-lg font-semibold">
-                        <Shield className="text-primary" size={20} />
-                        Керування командою
-                    </h2>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                        Запрошуйте співробітників, налаштовуйте ролі та права доступу до ресурсів
-                        кав&apos;ярні.
-                    </p>
-                </div>
-                <Button
-                    onClick={() => setIsInviteOpen(true)}
-                    variant={buttonVariantKeys.primary}
-                    text="Запросити учасника"
-                    iconName="plus"
-                    className="h-10 text-sm"
-                />
-            </div>
-
+        <div>
             <ResourceTable<WorkspaceMember>
                 title="Учасники робочого простору"
                 data={members}
@@ -210,54 +278,34 @@ export function WorkspaceMembersTable() {
                 createActionsColumn={() =>
                     createWorkspaceMemberActionsColumn(handleRemoveMember, openEditModal)
                 }
-            />
+                showPagination={false}
+                showExport={false}
+                showFilters={false}
+                showColumnVisibility={false}
+            >
+                <Button
+                    onClick={() => setIsInviteOpen(true)}
+                    variant={buttonVariantKeys.primary}
+                    text="Запросити учасника"
+                    iconName="plus"
+                    className="h-10 text-sm"
+                />
+            </ResourceTable>
 
-            {invitations.length > 0 && (
-                <div className="border-border border-t pt-4">
-                    <h3 className="text-muted-foreground mb-3 flex items-center gap-1.5 text-sm font-semibold tracking-wider uppercase">
-                        <Mail size={16} />
-                        Очікують прийняття
-                    </h3>
-                    <div className="border-border overflow-x-auto rounded-xl border border-dashed">
-                        <table className="w-full text-left text-sm">
-                            <thead className="bg-muted/30">
-                                <tr className="border-border text-muted-foreground border-b text-xs font-medium uppercase">
-                                    <th className="px-4 py-2.5">Email</th>
-                                    <th className="px-4 py-2.5">Роль</th>
-                                    <th className="px-4 py-2.5">Статус</th>
-                                    <th className="px-4 py-2.5 text-right">Скасувати</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {invitations.map((inv) => (
-                                    <tr
-                                        key={inv._id}
-                                        className="border-border hover:bg-muted/20 border-b last:border-none"
-                                    >
-                                        <td className="text-foreground px-4 py-2.5 font-medium">
-                                            {inv.email}
-                                        </td>
-                                        <td className="px-4 py-2.5">{getRoleBadge(inv.role)}</td>
-                                        <td className="px-4 py-2.5">
-                                            <Badge color="bg-yellow-500/10" textColor="text-yellow-500">
-                                                Надіслано
-                                            </Badge>
-                                        </td>
-                                        <td className="px-4 py-2.5 text-right">
-                                            <button
-                                                onClick={() => handleCancelInvitation(inv._id)}
-                                                className="rounded-lg p-1.5 text-rose-500 transition-colors hover:bg-rose-500/10"
-                                            >
-                                                <X size={16} />
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            )}
+            <ResourceTable<WorkspaceInvitation>
+                title="Очікують прийняття"
+                data={invitations}
+                isLoading={loading}
+                columns={invitationColumns}
+                onDelete={handleCancelInvitation}
+                createActionsColumn={(onDelete) =>
+                    createInvitationActionsColumn(onDelete, openInvitationEditModal)
+                }
+                showPagination={false}
+                showExport={false}
+                showFilters={false}
+                showColumnVisibility={false}
+            />
 
             <ModalWindow
                 open={isInviteOpen}
@@ -363,6 +411,118 @@ export function WorkspaceMembersTable() {
                             variant={buttonVariantKeys.primary}
                             loading={inviteLoading}
                             text="Запросити"
+                            className="h-10 text-sm"
+                        />
+                    </div>
+                </form>
+            </ModalWindow>
+
+            <ModalWindow
+                open={isInvitationEditOpen}
+                onOpenChange={(open) => {
+                    setIsInvitationEditOpen(open);
+
+                    if (!open) setEditingInvitation(null);
+                }}
+                title="Редагування запрошення"
+                description={`Змініть email, роль та доступи для ${editingInvitation?.email ?? "учасника"}.`}
+                size="md"
+            >
+                <form onSubmit={handleUpdateInvitation} className="space-y-6">
+                    <MRInput
+                        label="Email користувача"
+                        type="email"
+                        required
+                        value={invitationEditEmail}
+                        onChange={(e) => setInvitationEditEmail(e.target.value)}
+                    />
+
+                    <div className="space-y-2">
+                        <label className="text-muted-foreground text-xs font-semibold uppercase">
+                            Роль у команді
+                        </label>
+                        <Select
+                            value={invitationEditRole}
+                            onValueChange={(val) =>
+                                setInvitationEditRole(val as "admin" | "manager" | "barista")
+                            }
+                            options={[
+                                { value: "admin", label: "Адміністратор (повний доступ)" },
+                                { value: "manager", label: "Менеджер (все, крім видалення)" },
+                                { value: "barista", label: "Бариста (обмежені доступи)" },
+                            ]}
+                        />
+                    </div>
+
+                    {invitationEditRole === "barista" && (
+                        <div className="bg-muted/30 border-border space-y-3 rounded-xl border p-4">
+                            <label className="text-muted-foreground mb-1 block text-xs font-semibold uppercase">
+                                Доступи для Бариста
+                            </label>
+                            <div className="grid max-h-52 grid-cols-1 gap-3 overflow-y-auto pr-2 sm:grid-cols-2">
+                                {RESOURCES.map((res) => (
+                                    <div
+                                        key={res.key}
+                                        className="bg-card border-border space-y-1 rounded-lg border p-2"
+                                    >
+                                        <div className="text-foreground text-xs font-semibold">
+                                            {res.label}
+                                        </div>
+                                        <div className="mt-1 flex items-center gap-4">
+                                            <label className="text-muted-foreground flex cursor-pointer items-center gap-1.5 text-xs select-none">
+                                                <input
+                                                    type="checkbox"
+                                                    className="border-border text-primary h-3.5 w-3.5 rounded focus:ring-0"
+                                                    checked={invitationEditPermissions.includes(
+                                                        `${res.key}:read`,
+                                                    )}
+                                                    onChange={(e) =>
+                                                        togglePermission(
+                                                            `${res.key}:read`,
+                                                            e.target.checked,
+                                                            setInvitationEditPermissions,
+                                                        )
+                                                    }
+                                                />
+                                                Читати
+                                            </label>
+                                            <label className="text-muted-foreground flex cursor-pointer items-center gap-1.5 text-xs select-none">
+                                                <input
+                                                    type="checkbox"
+                                                    className="border-border text-primary h-3.5 w-3.5 rounded focus:ring-0"
+                                                    checked={invitationEditPermissions.includes(
+                                                        `${res.key}:write`,
+                                                    )}
+                                                    onChange={(e) =>
+                                                        togglePermission(
+                                                            `${res.key}:write`,
+                                                            e.target.checked,
+                                                            setInvitationEditPermissions,
+                                                        )
+                                                    }
+                                                />
+                                                Запис
+                                            </label>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="mt-6 flex justify-end gap-3">
+                        <Button
+                            type="button"
+                            variant={buttonVariantKeys.secondary}
+                            onClick={() => setIsInvitationEditOpen(false)}
+                            text="Скасувати"
+                            className="h-10 text-sm"
+                        />
+                        <Button
+                            type="submit"
+                            variant={buttonVariantKeys.primary}
+                            loading={invitationEditLoading}
+                            text="Зберегти"
                             className="h-10 text-sm"
                         />
                     </div>

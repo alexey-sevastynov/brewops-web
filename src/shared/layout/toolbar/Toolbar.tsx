@@ -10,22 +10,25 @@ import { Text } from "@/shared/ui/typography/text/Text";
 interface ToolbarProps {
     className?: string;
     userName?: string;
-    userRole?: string;
 }
 
 function isCoffeeShopPath(pathname: string) {
     return pathname.startsWith("/coffee-shop/");
 }
 
-export function Toolbar({ className, userName, userRole }: ToolbarProps) {
-    const pathname = usePathname();
-    const selectedCoffeeShopName = useAppSelector((state) => {
-        if (!isCoffeeShopPath(pathname)) return null;
+function getCoffeeShopIdFromPathname(pathname: string) {
+    if (!isCoffeeShopPath(pathname)) return null;
 
-        return (
-            state.coffeeShop.coffeeShops.find((shop) => shop._id === state.coffeeShop.selectedCoffeeShopId)
-                ?.name ?? null
-        );
+    return pathname.split("/")[2] || null;
+}
+
+export function Toolbar({ className, userName }: ToolbarProps) {
+    const pathname = usePathname();
+    const coffeeShopId = getCoffeeShopIdFromPathname(pathname);
+    const selectedCoffeeShopName = useAppSelector((state) => {
+        if (!coffeeShopId) return null;
+
+        return state.coffeeShop.coffeeShops.find((shop) => shop._id === coffeeShopId)?.name ?? null;
     });
 
     return (
@@ -37,7 +40,7 @@ export function Toolbar({ className, userName, userRole }: ToolbarProps) {
         >
             <InvertedCorner className="absolute top-full left-0" fillColor="fill-sidebar" />
             {selectedCoffeeShopName ? <Text> {selectedCoffeeShopName}</Text> : null}
-            <ToolbarAvatarMenu userName={userName} userRole={userRole} />
+            <ToolbarAvatarMenu userName={userName} />
         </header>
     );
 }

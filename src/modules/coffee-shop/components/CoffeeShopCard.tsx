@@ -33,8 +33,7 @@ export function CoffeeShopCard({ coffeeShop }: CoffeeShopCardProps) {
         >
             <div className="flex items-start justify-between gap-3">
                 <div>
-                    <Title>Кавʼярня</Title>
-                    <Text>{coffeeShop.name}</Text>
+                    <Title>{coffeeShop.name}</Title>
                 </div>
 
                 <Badge>Open</Badge>

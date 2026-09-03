@@ -5,12 +5,14 @@ import { dailyReportExtraReducers } from "@/modules/daily-report/model/daily-rep
 
 export interface DailyReportState {
     data: DailyReport[];
+    coffeeShopId: string | null;
     loading: boolean;
     error: ApiError | null;
 }
 
 const initialState: DailyReportState = {
     data: [],
+    coffeeShopId: null,
     loading: false,
     error: null,
 };

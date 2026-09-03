@@ -19,13 +19,7 @@ export const signIn = createAsyncThunk<AuthResponse, SignInDto, WithRejectValue>
                 password: signInDto.password,
             });
 
-            setAuthCookies(
-                response.token,
-                response.userName,
-                !!response.isVerified,
-                response.userRole,
-                response.workspaceId,
-            );
+            setAuthCookies(response.token, response.userName, !!response.isVerified, response.workspaceId);
 
             return response;
         } catch (error: unknown) {
