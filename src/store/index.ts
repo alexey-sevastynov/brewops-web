@@ -1,5 +1,4 @@
 import { configureStore } from "@reduxjs/toolkit";
-import taskReducer from "@/modules/task/model/slice";
 import authReducer from "@/modules/auth/model/slice";
 import employeeReducer from "@/modules/employee/model/employee-slice";
 import dailyReportReducer from "@/modules/daily-report/model/daily-report-slice";
@@ -10,11 +9,12 @@ import ownerWithdrawalReducer from "@/modules/owner-withdrawal/model/owner-withd
 import statisticsReducers from "@/modules/statistics/model/statistics-slice";
 import kavappInventoryReducer from "@/modules/kavapp-inventory/model/kavapp-inventory-slice";
 import inventoryAlertRuleReducer from "@/modules/kavapp-inventory-alert-rules/model/inventory-alert-rule-slice";
+import workspaceReducer from "@/modules/workspace/model/workspace-slice";
+import coffeeShopReducer from "@/modules/coffee-shop/model/coffee-shop-slice";
 import { toastMiddleware } from "@/toast-middleware";
 
 export const store = configureStore({
     reducer: {
-        task: taskReducer,
         auth: authReducer,
         employee: employeeReducer,
         dailyReport: dailyReportReducer,
@@ -25,6 +25,8 @@ export const store = configureStore({
         statistics: statisticsReducers,
         kavappInventory: kavappInventoryReducer,
         inventoryAlertRules: inventoryAlertRuleReducer,
+        workspace: workspaceReducer,
+        coffeeShop: coffeeShopReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

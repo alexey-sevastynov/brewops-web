@@ -15,7 +15,6 @@ const apiModeKeys = {
 const publicApiPaths = [
     "/auth/signin",
     "/auth/signup",
-    "/auth/guest",
     "/password-reset",
     "/mail-verification",
 ] as const;
@@ -27,9 +26,18 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use((config) => {
     const token = getCookie(cookieKeys.token);
+    const coffeeShopId = getCookie(cookieKeys.coffeeShopId);
+    const requestUrl = String(config.url ?? "");
 
     if (token) {
         config.headers.set("Authorization", `Bearer ${token}`);
+    }
+
+    // Rewrite endpoints that scope by coffeeShopId
+    if (requestUrl.startsWith("/coffee-shop/") && coffeeShopId) {
+        config.url = requestUrl.replace(/^\/coffee-shop\//, `/coffee-shops/${coffeeShopId}/`);
+    } else if (requestUrl === "/coffee-shop" && coffeeShopId) {
+        config.url = `/coffee-shops/${coffeeShopId}`;
     }
 
     return config;

@@ -14,23 +14,19 @@ import {
 
 export const getAllKavappInventory = createAsyncThunk<
     KavappInventoryResponse,
-    string | undefined,
+    { coffeeShopId: string; pointId?: string },
     { rejectValue: AxiosError }
->("kavappInventory/getAll", async (pointId?: string) => {
-    const inventoryResponse = await fetchKavappInventory(pointId);
-
-    return inventoryResponse;
+>("kavappInventory/getAll", async ({ coffeeShopId, pointId }) => {
+    return fetchKavappInventory(coffeeShopId, pointId);
 });
 
 export const syncKavappInventory = createAsyncThunk<
     unknown,
-    { pointId?: string; testAlert?: boolean },
+    { coffeeShopId: string; pointId?: string; testAlert?: boolean },
     WithRejectValue
->("kavappInventory/sync", async ({ pointId, testAlert }, { rejectWithValue }) => {
+>("kavappInventory/sync", async ({ coffeeShopId, pointId, testAlert }, { rejectWithValue }) => {
     try {
-        const response = await syncKavappInventoryApi(pointId, testAlert);
-
-        return response;
+        return syncKavappInventoryApi(coffeeShopId, pointId, testAlert);
     } catch (error: unknown) {
         return rejectWithValue(convertToApiError(error));
     }
@@ -38,10 +34,8 @@ export const syncKavappInventory = createAsyncThunk<
 
 export const getLatestKavappSnapshot = createAsyncThunk<
     KavappInventorySnapshot,
-    void,
+    { coffeeShopId: string },
     { rejectValue: AxiosError }
->("kavappInventory/getLatestSnapshot", async () => {
-    const snapshot = await fetchLatestKavappSnapshot();
-
-    return snapshot;
+>("kavappInventory/getLatestSnapshot", async ({ coffeeShopId }) => {
+    return fetchLatestKavappSnapshot(coffeeShopId);
 });

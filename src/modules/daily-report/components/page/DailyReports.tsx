@@ -1,5 +1,6 @@
 import { DailyReportResourceTable } from "@/modules/daily-report/components/daily-report-resource-table/DailyReportResourceTable";
+import { WithCoffeeShopId } from "@/shared/types/with-coffee-shop-id";
 
-export function DailyReports() {
-    return <DailyReportResourceTable />;
+export function DailyReports({ coffeeShopId }: WithCoffeeShopId) {
+    return <DailyReportResourceTable coffeeShopId={coffeeShopId} />;
 }

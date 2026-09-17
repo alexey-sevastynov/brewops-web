@@ -11,8 +11,9 @@ import {
     getBirthdayDescription,
     isBirthdayOnDate,
 } from "@/modules/employee/components/birthday-toast-notifier/birthdayToastNotifier.funcs";
+import { WithCoffeeShopId } from "@/shared/types/with-coffee-shop-id";
 
-export function BirthdayToastNotifier() {
+export function BirthdayToastNotifier({ coffeeShopId }: WithCoffeeShopId) {
     const dispatch = useAppDispatch();
     const employees = useAppSelector((state) => state.employee.data);
     const isLoadingEmployees = useAppSelector((state) => state.employee.loading);
@@ -32,8 +33,8 @@ export function BirthdayToastNotifier() {
         if (hasRequestedEmployees.current || employees.length || isLoadingEmployees) return;
 
         hasRequestedEmployees.current = true;
-        dispatch(getAllEmployees());
-    }, [dispatch, employees.length, isLoadingEmployees]);
+        dispatch(getAllEmployees(coffeeShopId));
+    }, [dispatch, employees.length, isLoadingEmployees, coffeeShopId]);
 
     useEffect(() => {
         const birthdayEmployees = employees.filter((employee) => isBirthdayOnDate(employee, today));

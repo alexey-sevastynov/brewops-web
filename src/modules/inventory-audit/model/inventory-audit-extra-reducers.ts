@@ -15,6 +15,7 @@ export const inventoryAuditExtraReducers = (builder: ActionReducerMapBuilder<Inv
         .addCase(getAllInventoryAudits.pending, (state) => {
             state.loading = true;
             state.error = null;
+            state.data = [];
         })
         .addCase(getAllInventoryAudits.fulfilled, (state, action: PayloadAction<InventoryAudit[]>) => {
             state.data = action.payload;
@@ -29,7 +30,7 @@ export const inventoryAuditExtraReducers = (builder: ActionReducerMapBuilder<Inv
             state.data.push(action.payload);
         })
         .addCase(deleteInventoryAudit.fulfilled, (state, action) => {
-            state.data = state.data.filter((audit) => audit._id !== action.meta.arg);
+            state.data = state.data.filter((audit) => audit._id !== action.meta.arg.id);
         })
         .addCase(updateInventoryAudit.fulfilled, (state, action) => {
             const index = state.data.findIndex((audit) => audit._id === action.payload._id);
