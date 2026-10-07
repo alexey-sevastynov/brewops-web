@@ -1,18 +1,19 @@
 import { useEffect, useMemo } from "react";
-import { dailyReportFormFields } from "@/modules/daily-report/configs/daily-report-form-fields";
-import { DailyReport } from "@/modules/daily-report/types/daily-report";
-import { getAllEmployees } from "@/modules/employee/model/employee-thunks";
 import { useAppDispatch } from "@/shared/lib/redux/hooks/use-app-dispatch";
 import { useAppSelector } from "@/shared/lib/redux/hooks/use-app-selector";
 import { ResourceField } from "@/shared/types/resource-field";
+import { WithCoffeeShopId } from "@/shared/types/with-coffee-shop-id";
+import { DailyReport } from "@/modules/daily-report/types/daily-report";
+import { getAllEmployees } from "@/modules/employee/model/employee-thunks";
+import { dailyReportFormFields } from "@/modules/daily-report/configs/daily-report-form-fields";
 
-export function useDailyReportFormFields() {
+export function useDailyReportFormFields({ coffeeShopId }: WithCoffeeShopId) {
     const dispatch = useAppDispatch();
     const employees = useAppSelector((state) => state.employee.data);
     const dailyReports = useAppSelector((state) => state.dailyReport.data);
 
     useEffect(() => {
-        dispatch(getAllEmployees());
+        dispatch(getAllEmployees(coffeeShopId));
     }, [dispatch]);
 
     const employeeOptions = useMemo(() => {

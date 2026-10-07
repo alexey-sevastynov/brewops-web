@@ -1,5 +1,6 @@
 // TODO : Remove max-lines-per-function eslint-disable when the component is refactored into smaller components
 /* eslint-disable max-lines-per-function */
+/* eslint-disable complexity */
 import { useMemo } from "react";
 import { FieldValues, DefaultValues } from "react-hook-form";
 import {
@@ -49,6 +50,11 @@ interface ResourceTableProps<T extends FieldValues> {
         sheetName: string;
     };
     stickyHeader?: boolean;
+    children?: React.ReactNode;
+    showPagination?: boolean;
+    showExport?: boolean;
+    showFilters?: boolean;
+    showColumnVisibility?: boolean;
 }
 
 export function ResourceTable<T extends FieldValues>({
@@ -68,6 +74,11 @@ export function ResourceTable<T extends FieldValues>({
     createActionsColumn,
     exportConfig,
     stickyHeader = false,
+    children,
+    showPagination = true,
+    showExport = true,
+    showFilters = true,
+    showColumnVisibility = true,
 }: ResourceTableProps<T>) {
     const resourceTable = useResourceTable<T>();
 
@@ -109,7 +120,13 @@ export function ResourceTable<T extends FieldValues>({
     return (
         <div className="w-full">
             <Title textPosition={textPositions.left}>{title}</Title>
-            <TableToolbox reactTable={reactTable}>
+            <TableToolbox
+                reactTable={reactTable}
+                showExport={showExport}
+                showFilters={showFilters}
+                showColumnVisibility={showColumnVisibility}
+            >
+                {children}
                 {formFields && onCreate && (
                     <ResourceFormModal<T>
                         fields={formFields}
@@ -168,22 +185,24 @@ export function ResourceTable<T extends FieldValues>({
             <Table
                 config={createTableConfig({
                     reactTable: reactTable,
-                    isLoading: isLoading,
+                    isLoading: isLoading ?? false,
                     noDataMessage: "Немає даних для відображення",
                     stickyHeader,
                 })}
             />
-            <TablePager
-                currentPage={reactTable.getState().pagination.pageIndex + 1}
-                pageSize={reactTable.getState().pagination.pageSize}
-                totalRows={reactTable.getFilteredRowModel().rows.length}
-                pageCount={reactTable.getPageCount()}
-                canNext={reactTable.getCanNextPage()}
-                canPrevious={reactTable.getCanPreviousPage()}
-                pageSizeOptions={[defaultTablePageSize, 50, 100]}
-                onPageChange={(page) => reactTable.setPageIndex(page - 1)}
-                onPageSizeChange={(size) => reactTable.setPageSize(size)}
-            />
+            {showPagination && (
+                <TablePager
+                    currentPage={reactTable.getState().pagination.pageIndex + 1}
+                    pageSize={reactTable.getState().pagination.pageSize}
+                    totalRows={reactTable.getFilteredRowModel().rows.length}
+                    pageCount={reactTable.getPageCount()}
+                    canNext={reactTable.getCanNextPage()}
+                    canPrevious={reactTable.getCanPreviousPage()}
+                    pageSizeOptions={[defaultTablePageSize, 50, 100]}
+                    onPageChange={(page) => reactTable.setPageIndex(page - 1)}
+                    onPageSizeChange={(size) => reactTable.setPageSize(size)}
+                />
+            )}
         </div>
     );
 }

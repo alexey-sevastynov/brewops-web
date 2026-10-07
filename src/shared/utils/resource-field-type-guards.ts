@@ -15,3 +15,7 @@ export function isEnumFieldType(type: ResourceFieldType) {
 export function isDateFieldType(type: ResourceFieldType) {
     return type === resourceFieldTypes.date;
 }
+
+export function isPasswordFieldType(type: ResourceFieldType) {
+    return type === resourceFieldTypes.password;
+}

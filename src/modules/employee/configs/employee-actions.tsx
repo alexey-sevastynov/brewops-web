@@ -18,11 +18,27 @@ function createActionsColumn<TData>(renderActions: RenderFunc<TData>) {
     return actionsColumn;
 }
 
-export function createEmployeeActionsColumn(onDelete: VoidFunc<string>, onEdit: VoidFunc<Employee>) {
-    return createActionsColumn<Employee>((employee) => (
-        <>
-            <Button iconName={iconNames.edit} onClick={() => onEdit(employee)} />
-            <Button iconName={iconNames.trash} onClick={() => onDelete(employee._id)} />
-        </>
-    ));
+interface ActionColumnPermissions {
+    canWrite?: boolean;
+    canDelete?: boolean;
+}
+
+export function createEmployeeActionsColumn(
+    onDelete: VoidFunc<string>,
+    onEdit: VoidFunc<Employee>,
+    permissions?: ActionColumnPermissions,
+) {
+    const canWrite = permissions?.canWrite ?? true;
+    const canDelete = permissions?.canDelete ?? true;
+
+    return createActionsColumn<Employee>((employee) => {
+        if (!canWrite && !canDelete) return null;
+
+        return (
+            <>
+                {canWrite && <Button iconName={iconNames.edit} onClick={() => onEdit(employee)} />}
+                {canDelete && <Button iconName={iconNames.trash} onClick={() => onDelete(employee._id)} />}
+            </>
+        );
+    });
 }

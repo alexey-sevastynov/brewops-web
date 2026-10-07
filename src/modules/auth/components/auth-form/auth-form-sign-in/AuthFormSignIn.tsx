@@ -10,17 +10,19 @@ import { notificationMessageKeys } from "@/shared/ui/notification-message/notifi
 import { ValidatedInput } from "@/shared/ui/validated-input/ValidatedInput";
 import { PasswordInput } from "@/shared/ui/password-input/PasswordInput";
 import { replaceRoute } from "@/shared/utils/navigation";
-import { buttonVariantKeys } from "@/shared/ui/button/button-variant-keys";
-import { Divider } from "@/shared/ui/divider/Divider";
 import { routeKeys } from "@/shared/constants/route-keys";
 import { SignInFormValues } from "@/modules/auth/types/sign-in-form-values";
 import { login } from "@/modules/auth/components/auth-form/auth-form-sign-in/authFormSignIn.funcs";
-import { signInAsGuest } from "@/modules/auth/model/thunks";
 import { Link } from "@/shared/ui/link/Link";
 import { isSignInMode } from "@/modules/auth/components/auth-form/AuthForm.funcs";
 import { AuthModeKey } from "@/modules/auth/enums/auth-mode-key";
 
-export function AuthFormSignIn({ authMode }: { authMode: AuthModeKey }) {
+interface AuthFormSignInProps {
+    authMode: AuthModeKey;
+    defaultEmail?: string;
+}
+
+export function AuthFormSignIn({ authMode, defaultEmail }: AuthFormSignInProps) {
     const dispatch = useAppDispatch();
     const router = useRouter();
     const errorMessage = useAppSelector((state) => state.auth.error);
@@ -30,18 +32,12 @@ export function AuthFormSignIn({ authMode }: { authMode: AuthModeKey }) {
         control,
         handleSubmit,
         formState: { errors },
-    } = useForm<SignInFormValues>();
+    } = useForm<SignInFormValues>({
+        defaultValues: { email: defaultEmail },
+    });
 
     const onSubmit = async (data: SignInFormValues) => {
         const response = await login(dispatch, data);
-
-        if (response.meta.requestStatus === "fulfilled") {
-            replaceRoute(router, routeKeys.home);
-        }
-    };
-
-    const onGuestLogin = async () => {
-        const response = await dispatch(signInAsGuest());
 
         if (response.meta.requestStatus === "fulfilled") {
             replaceRoute(router, routeKeys.home);
@@ -72,25 +68,12 @@ export function AuthFormSignIn({ authMode }: { authMode: AuthModeKey }) {
                 </div>
             )}
 
-            <div>
-                <Button
-                    text="Увійти"
-                    type="submit"
-                    className="flex w-full items-center justify-center space-x-2"
-                    loading={isLoading}
-                />
-
-                <Divider text="АБО" className="py-2" />
-
-                <Button
-                    text="Продовжити як Гість"
-                    variant={buttonVariantKeys.outline}
-                    type="button"
-                    className="flex w-full items-center justify-center space-x-2"
-                    onClick={onGuestLogin}
-                    loading={isLoading}
-                />
-            </div>
+            <Button
+                text="Увійти"
+                type="submit"
+                className="flex w-full items-center justify-center space-x-2"
+                loading={isLoading}
+            />
         </form>
     );
 }

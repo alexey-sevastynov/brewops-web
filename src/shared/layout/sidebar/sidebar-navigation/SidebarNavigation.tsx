@@ -1,9 +1,8 @@
-import {
-    SidebarNavigationItem,
-} from "@/shared/layout/sidebar/sidebar-navigation/sidebar-navigation-item/SidebarNavigationItem";
+import { SidebarNavigationItemConfig } from "@/shared/layout/sidebar/types/sidebar-navigation-item";
+import { SidebarNavigationItem } from "@/shared/layout/sidebar/sidebar-navigation/sidebar-navigation-item/SidebarNavigationItem";
 
 interface SidebarNavigationProps {
-    sidebarNavigationItems: SidebarNavigationItem[];
+    sidebarNavigationItems: SidebarNavigationItemConfig[];
 }
 
 export function SidebarNavigation({ sidebarNavigationItems }: SidebarNavigationProps) {

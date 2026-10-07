@@ -26,6 +26,7 @@ const inventoryAlertRuleSlice = createSlice({
             .addCase(getAllInventoryAlertRules.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.data = [];
             })
             .addCase(
                 getAllInventoryAlertRules.fulfilled,
@@ -50,7 +51,7 @@ const inventoryAlertRuleSlice = createSlice({
                 }
             })
             .addCase(deleteInventoryAlertRule.fulfilled, (state, action) => {
-                state.data = state.data.filter(({ _id }) => _id !== action.meta.arg);
+                state.data = state.data.filter(({ _id }) => _id !== action.meta.arg.id);
             });
     },
 });

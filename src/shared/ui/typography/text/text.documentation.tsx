@@ -9,6 +9,7 @@ import {
 } from "@/shared/types/ui/documentation";
 import { createExample, getPropRows } from "@/shared/utils/ui-documentation";
 import { textMetadata, textPropNames } from "@/shared/ui/typography/text/text.metadata";
+import { isNonEmptyArray } from "@/shared/utils/array";
 
 const getSizeKey = (val: string) =>
     Object.keys(textSizes).find((k) => textSizes[k as keyof typeof textSizes] === val) || "";
@@ -70,7 +71,7 @@ function createTextUsageCode(props: Omit<TextProps, "children">) {
     });
 
     const propEntriesFiltered = propEntries.filter(Boolean);
-    const propsString = propEntriesFiltered.length > 0 ? ` ${propEntriesFiltered.join(" ")}` : "";
+    const propsString = isNonEmptyArray(propEntriesFiltered) ? ` ${propEntriesFiltered.join(" ")}` : "";
 
     return `${imports.join("\n")}\n\n<Text${propsString}>\n    Приклад тексту для відображення\n</Text>`;
 }

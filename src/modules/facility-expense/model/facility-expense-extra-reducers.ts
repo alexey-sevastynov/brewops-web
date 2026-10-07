@@ -15,6 +15,7 @@ export const facilityExpenseExtraReducers = (builder: ActionReducerMapBuilder<Fa
         .addCase(getAllFacilityExpenses.pending, (state) => {
             state.loading = true;
             state.error = null;
+            state.data = [];
         })
         .addCase(getAllFacilityExpenses.fulfilled, (state, action: PayloadAction<FacilityExpense[]>) => {
             state.data = action.payload;
@@ -29,7 +30,7 @@ export const facilityExpenseExtraReducers = (builder: ActionReducerMapBuilder<Fa
             state.data.push(action.payload);
         })
         .addCase(deleteFacilityExpense.fulfilled, (state, action) => {
-            state.data = state.data.filter((expense) => expense._id !== action.meta.arg);
+            state.data = state.data.filter((expense) => expense._id !== action.meta.arg.id);
         })
         .addCase(updateFacilityExpense.fulfilled, (state, action) => {
             const index = state.data.findIndex((expense) => expense._id === action.payload._id);

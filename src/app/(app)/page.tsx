@@ -1,21 +1,15 @@
-import { Home } from "@/app/(app)/Home";
-import { cookieKeys } from "@/shared/utils/cookie/cookie-key";
-import { getServerCookie } from "@/shared/utils/cookie/cookie-server";
 import { createMetadata } from "@/shared/utils/seo/create-metadata";
-import { JsonLd } from "@/shared/ui/seo/JsonLd";
-import { generateWebApplicationSchema } from "@/shared/utils/seo/shema/web-application";
+import { routeKeys } from "@/shared/constants/route-keys";
+import { AppHomePage } from "@/app/(app)/AppHomePage";
 
 export const metadata = createMetadata({
-    title: "Головна панель управління",
+    title: "BrewOps — управління кав'ярнями",
+    resourceName: "BrewOps",
+    description: `SaaS-платформа для управління кав'ярнями: облік торгових точок і співробітників, 
+        щоденні звіти та витрати, аналіз доходів, витрат і чистого прибутку.`,
+    canonicalPath: routeKeys.home,
 });
 
-export default async function HomePage() {
-    const userName = await getServerCookie(cookieKeys.userName);
-
-    return (
-        <>
-            <JsonLd schema={generateWebApplicationSchema()} />
-            <Home userName={userName} />
-        </>
-    );
+export default function Page() {
+    return <AppHomePage />;
 }
