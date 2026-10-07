@@ -17,5 +17,11 @@ export const apiEndpointNames = {
     kavappInventoryAlertRules: (coffeeShopId: string) => `/coffee-shops/${coffeeShopId}/kavapp/alert-rules`,
     statistics: (coffeeShopId: string) => `/coffee-shops/${coffeeShopId}/statistics`,
     workspaces: "/workspaces",
+    workspaceMembers: (workspaceId: string) => `/workspaces/${workspaceId}/members`,
+    workspaceMember: (workspaceId: string, memberId: string) => `/workspaces/${workspaceId}/members/${memberId}`,
+    workspaceInvitations: (workspaceId: string) => `/workspaces/${workspaceId}/invitations`,
+    workspaceInvitation: (workspaceId: string, invitationId: string) =>
+        `/workspaces/${workspaceId}/invitations/${invitationId}`,
     coffeeShops: "/coffee-shops",
+    usersMe: "/users/me",
 } as const;

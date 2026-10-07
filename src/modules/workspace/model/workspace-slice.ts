@@ -1,17 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ApiError } from "@/shared/types/api-error/api-error-type";
 import { Workspace } from "@/modules/workspace/types/workspace";
-import {
-    changeWorkspacePlan,
-    getWorkspaces,
-    updateWorkspace,
-} from "@/modules/workspace/model/workspace-thunks";
+import { WorkspaceMember } from "@/modules/workspace/types/workspace-member";
+import { WorkspaceInvitation } from "@/modules/workspace/types/workspace-invitation";
+import { workspaceExtraReducers } from "@/modules/workspace/model/workspace-extra-reducers";
 
 export interface WorkspaceState {
     workspaces: Workspace[];
     selectedWorkspaceId: string | null;
     isLoading: boolean;
     error: ApiError | null;
+    members: WorkspaceMember[];
+    isMembersLoading: boolean;
+    invitations: WorkspaceInvitation[];
+    isInvitationsLoading: boolean;
 }
 
 const initialState: WorkspaceState = {
@@ -19,6 +21,10 @@ const initialState: WorkspaceState = {
     selectedWorkspaceId: null,
     isLoading: false,
     error: null,
+    members: [],
+    isMembersLoading: false,
+    invitations: [],
+    isInvitationsLoading: false,
 };
 
 const workspaceSlice = createSlice({
@@ -32,45 +38,7 @@ const workspaceSlice = createSlice({
             state.error = null;
         },
     },
-    extraReducers: (builder) => {
-        builder
-            .addCase(getWorkspaces.pending, (state) => {
-                state.isLoading = true;
-                state.error = null;
-            })
-            .addCase(getWorkspaces.fulfilled, (state, action) => {
-                state.workspaces = action.payload;
-                state.isLoading = false;
-            })
-            .addCase(getWorkspaces.rejected, (state, action) => {
-                state.isLoading = false;
-                state.error = action.payload ?? null;
-            })
-            .addCase(updateWorkspace.fulfilled, (state, action) => {
-                const index = state.workspaces.findIndex(({ _id }) => _id === action.payload._id);
-
-                if (index !== -1) {
-                    state.workspaces[index] = { ...state.workspaces[index], ...action.payload };
-                }
-            })
-            .addCase(changeWorkspacePlan.pending, (state) => {
-                state.isLoading = true;
-                state.error = null;
-            })
-            .addCase(changeWorkspacePlan.fulfilled, (state, action) => {
-                const index = state.workspaces.findIndex(({ _id }) => _id === action.payload._id);
-
-                if (index !== -1) {
-                    state.workspaces[index] = { ...state.workspaces[index], ...action.payload };
-                }
-
-                state.isLoading = false;
-            })
-            .addCase(changeWorkspacePlan.rejected, (state, action) => {
-                state.isLoading = false;
-                state.error = action.payload ?? null;
-            });
-    },
+    extraReducers: workspaceExtraReducers,
 });
 
 export const { setSelectedWorkspaceId, clearWorkspaceError } = workspaceSlice.actions;

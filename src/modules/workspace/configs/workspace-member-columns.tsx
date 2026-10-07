@@ -7,35 +7,18 @@ import { workspaceMemberLabels } from "@/modules/workspace/constants/workspace-m
 import { WorkspaceRoleKey } from "@/modules/workspace/types/workspace-role-key";
 import { workspaceRoleKeys } from "@/modules/workspace/constants/workspace-role-keys";
 import { workspaceRoleLabels } from "@/modules/workspace/constants/workspace-role-labels";
-import { WithObjectId } from "@/shared/types/with-object-id";
+import {
+    MemberUser,
+    CoffeeShopAccessItem,
+    WorkspaceMember,
+} from "@/modules/workspace/types/workspace-member";
 
-interface MemberUser {
-    _id: string;
-    userName: string;
-    email: string;
-    firstName?: string;
-    lastName?: string;
-}
-
-export interface CoffeeShopAccessItem {
-    coffeeShopId: string;
-    role?: string;
-    permissions: string[];
-}
-
-export interface WorkspaceMember extends WithObjectId {
-    userId: MemberUser;
-    role: WorkspaceRoleKey;
-    permissions?: string[];
-    coffeeShopAccess?: CoffeeShopAccessItem[];
-}
+export type { MemberUser, CoffeeShopAccessItem, WorkspaceMember };
 
 import { ResourceName } from "@/shared/constants/resource-names";
 import { resourceLabels } from "@/shared/constants/resource-labels";
-import {
-    PermissionAction,
-    permissionActionLabels,
-} from "@/shared/enums/permission-action";
+import { PermissionAction, permissionActionLabels } from "@/shared/enums/permission-action";
+import { isNonEmptyArray } from "@/shared/utils/array";
 
 export const getWorkspaceRoleBadge = (role: WorkspaceRoleKey) => {
     switch (role) {
@@ -72,7 +55,7 @@ export const getPermissionsLabel = (member: WorkspaceMember, coffeeShopMap?: Rec
         );
     }
 
-    if (member.coffeeShopAccess && member.coffeeShopAccess.length > 0) {
+    if (member.coffeeShopAccess && isNonEmptyArray(member.coffeeShopAccess)) {
         return (
             <div className="flex max-w-sm flex-col gap-1.5">
                 {member.coffeeShopAccess.map((access) => {
@@ -90,12 +73,11 @@ export const getPermissionsLabel = (member: WorkspaceMember, coffeeShopMap?: Rec
                                     Настроюваний
                                 </Badge>
                             </div>
-                            {access.permissions?.length > 0 && (
+                            {isNonEmptyArray(access.permissions) && (
                                 <div className="mt-0.5 flex flex-wrap gap-1">
                                     {access.permissions.map((p) => {
                                         const [res, action] = p.split(":");
-                                        const resourceName =
-                                            resourceLabels[res as ResourceName] || res;
+                                        const resourceName = resourceLabels[res as ResourceName] || res;
                                         const actionLabel =
                                             permissionActionLabels[action as PermissionAction] || action;
                                         return (
@@ -129,10 +111,8 @@ export const getPermissionsLabel = (member: WorkspaceMember, coffeeShopMap?: Rec
         <div className="flex max-w-xs flex-wrap gap-1">
             {member.permissions.map((p) => {
                 const [res, action] = p.split(":");
-                const resourceName =
-                    resourceLabels[res as ResourceName] || res;
-                const actionLabel =
-                    permissionActionLabels[action as PermissionAction] || action;
+                const resourceName = resourceLabels[res as ResourceName] || res;
+                const actionLabel = permissionActionLabels[action as PermissionAction] || action;
                 return (
                     <Badge key={p} color="bg-card border border-border" textColor="text-foreground">
                         {resourceName} ({actionLabel})

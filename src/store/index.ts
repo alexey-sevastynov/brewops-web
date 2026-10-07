@@ -11,6 +11,7 @@ import kavappInventoryReducer from "@/modules/kavapp-inventory/model/kavapp-inve
 import inventoryAlertRuleReducer from "@/modules/kavapp-inventory-alert-rules/model/inventory-alert-rule-slice";
 import workspaceReducer from "@/modules/workspace/model/workspace-slice";
 import coffeeShopReducer from "@/modules/coffee-shop/model/coffee-shop-slice";
+import userReducer from "@/modules/user/model/user-slice";
 import { toastMiddleware } from "@/toast-middleware";
 
 export const store = configureStore({
@@ -27,6 +28,7 @@ export const store = configureStore({
         inventoryAlertRules: inventoryAlertRuleReducer,
         workspace: workspaceReducer,
         coffeeShop: coffeeShopReducer,
+        user: userReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

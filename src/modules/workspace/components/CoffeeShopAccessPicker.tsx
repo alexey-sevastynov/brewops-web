@@ -2,24 +2,23 @@
 "use client";
 
 import { Shield, Store } from "lucide-react";
-import { CoffeeShop } from "@/modules/coffee-shop/types/coffee-shop";
+import { cn } from "@/shared/lib/cn";
 import { resourceNames, ResourceName } from "@/shared/constants/resource-names";
 import { resourceLabels } from "@/shared/constants/resource-labels";
+import { VoidFunc } from "@/shared/types/getter-setter-functions";
 import { permissionActions, permissionActionLabels } from "@/shared/enums/permission-action";
-import { workspaceRoleKeys } from "@/modules/workspace/constants/workspace-role-keys";
+import { CoffeeShop } from "@/modules/coffee-shop/types/coffee-shop";
 import { WorkspaceRoleKey } from "@/modules/workspace/types/workspace-role-key";
-
-export interface ShopAccessItemState {
-    coffeeShopId: string;
-    role?: string;
-    permissions: string[];
-}
+import { ShopAccessItemState } from "@/modules/workspace/types/shop-access-item-state";
+import { workspaceRoleKeys } from "@/modules/workspace/constants/workspace-role-keys";
+import { isAdminRole } from "@/modules/workspace/utils/guards";
+import { defaultPermissions } from "@/modules/workspace/constants/default-permissions";
 
 interface CoffeeShopAccessPickerProps {
     coffeeShops: CoffeeShop[];
     workspaceRole: WorkspaceRoleKey;
     value: ShopAccessItemState[];
-    onChange: (newValue: ShopAccessItemState[]) => void;
+    onChange: VoidFunc<ShopAccessItemState[]>;
 }
 
 export function CoffeeShopAccessPicker({
@@ -28,7 +27,7 @@ export function CoffeeShopAccessPicker({
     value,
     onChange,
 }: CoffeeShopAccessPickerProps) {
-    if (workspaceRole === workspaceRoleKeys.admin) {
+    if (isAdminRole(workspaceRole)) {
         return (
             <div className="flex items-start gap-3 rounded-xl border border-indigo-500/20 bg-indigo-500/10 p-3.5 text-sm text-indigo-400">
                 <Shield className="mt-0.5 h-5 w-5 shrink-0 text-indigo-400" />
@@ -53,17 +52,12 @@ export function CoffeeShopAccessPicker({
 
     const toggleShopAccess = (shopId: string, enabled: boolean) => {
         if (enabled) {
-            const defaultPerms = [
-                `${resourceNames.dailyReports}:${permissionActions.read}`,
-                `${resourceNames.dailyReports}:${permissionActions.write}`,
-                `${resourceNames.expenseReports}:${permissionActions.read}`,
-                `${resourceNames.expenseReports}:${permissionActions.write}`,
-            ];
             const newItem: ShopAccessItemState = {
                 coffeeShopId: shopId,
-                role: "custom",
-                permissions: defaultPerms,
+                role: workspaceRoleKeys.custom,
+                permissions: defaultPermissions,
             };
+
             onChange([...value, newItem]);
         } else {
             onChange(value.filter((item) => item.coffeeShopId !== shopId));
@@ -138,11 +132,12 @@ export function CoffeeShopAccessPicker({
                     return (
                         <div
                             key={shop._id}
-                            className={`rounded-xl border transition-all ${
+                            className={cn(
+                                "rounded-xl border p-3.5 transition-all",
                                 isEnabled
                                     ? "border-primary/40 bg-card shadow-sm"
-                                    : "border-border/60 bg-muted/20 opacity-75 hover:opacity-100"
-                            } p-3.5`}
+                                    : "border-border/60 bg-muted/20 opacity-75 hover:opacity-100",
+                            )}
                         >
                             <div className="flex items-center justify-between gap-3">
                                 <label className="flex cursor-pointer items-center gap-2.5 select-none">
@@ -154,7 +149,10 @@ export function CoffeeShopAccessPicker({
                                     />
                                     <div className="flex items-center gap-2">
                                         <Store
-                                            className={`h-4 w-4 ${isEnabled ? "text-primary" : "text-muted-foreground"}`}
+                                            className={cn(
+                                                "h-4 w-4",
+                                                isEnabled ? "text-primary" : "text-muted-foreground",
+                                            )}
                                         />
                                         <span className="text-foreground text-sm font-semibold">
                                             {shop.name}

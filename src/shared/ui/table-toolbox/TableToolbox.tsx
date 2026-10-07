@@ -7,6 +7,7 @@ import { iconNames } from "@/shared/ui/icon/icon-name";
 import { iconColors } from "@/shared/ui/icon/icon-color";
 import { buttonVariantKeys } from "@/shared/ui/button/button-variant-keys";
 import { exportTableToExcel } from "@/shared/lib/react-table/export/export-table-to-excel";
+import { isNonEmptyArray } from "@/shared/utils/array";
 
 interface TableToolboxProps<TData> {
     reactTable: Table<TData>;
@@ -24,7 +25,7 @@ export function TableToolbox<TData>({
     showColumnVisibility = true,
 }: TableToolboxProps<TData>) {
     const columns = reactTable.getAllColumns();
-    const hasData = reactTable.getCoreRowModel().rows.length > 0;
+    const hasData = isNonEmptyArray(reactTable.getCoreRowModel().rows);
 
     return (
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">

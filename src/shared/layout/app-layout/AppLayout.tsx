@@ -128,31 +128,31 @@ function getCoffeeShopSidebarNavigationItems(
         {
             href: routeKeys.dailyReports(coffeeShopId),
             iconName: iconNames.clipboardList,
-            label: "Daily Reports",
+            label: routeLabels.dailyReports,
             resourceKey: resourceNames.dailyReports,
         },
         {
             href: routeKeys.expenseReports(coffeeShopId),
             iconName: iconNames.wallet,
-            label: "Expense Reports",
+            label: routeLabels.expenseReports,
             resourceKey: resourceNames.expenseReports,
         },
         {
             href: routeKeys.facilityExpenses(coffeeShopId),
             iconName: iconNames.building2,
-            label: "Facility Expenses",
+            label: routeLabels.facilityExpenses,
             resourceKey: resourceNames.facilityExpenses,
         },
         {
             href: routeKeys.inventoryAudits(coffeeShopId),
             iconName: iconNames.clipboardCheck,
-            label: "Inventory Audits",
+            label: routeLabels.inventoryAudits,
             resourceKey: resourceNames.inventoryAudits,
         },
         {
             href: routeKeys.ownerWithdrawals(coffeeShopId),
             iconName: iconNames.handCoins,
-            label: "Owner Withdrawals",
+            label: routeLabels.ownerWithdrawals,
             resourceKey: resourceNames.ownerWithdrawals,
         },
         ...(!isFreePlan
@@ -161,7 +161,7 @@ function getCoffeeShopSidebarNavigationItems(
                       href: routeKeys.kavappInventory(coffeeShopId),
                       iconName: iconNames.package,
                       iconColor: iconColors.destructive,
-                      label: "Kavapp Inventory",
+                      label: routeLabels.kavappInventory,
                       resourceKey: resourceNames.kavapp,
                   },
               ]
