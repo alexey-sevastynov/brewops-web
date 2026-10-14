@@ -14,6 +14,7 @@ export const kavappInventoryExtraReducers = (builder: ActionReducerMapBuilder<Ka
         .addCase(getAllKavappInventory.pending, (state) => {
             state.loading = true;
             state.error = null;
+            state.inventory = null;
         })
         .addCase(getAllKavappInventory.fulfilled, (state, action: PayloadAction<KavappInventoryResponse>) => {
             state.inventory = action.payload;

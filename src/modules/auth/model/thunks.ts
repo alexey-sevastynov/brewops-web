@@ -1,14 +1,16 @@
-import { apiEndpointNames } from "@/shared/constants/api-endpoint-name";
-import { User } from "@/modules/auth/types/user";
-import { createOne } from "@/shared/services/crud-service";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { apiEndpointNames } from "@/shared/constants/api-endpoint-name";
+import { createOne } from "@/shared/services/crud-service";
+import { setAuthCookies } from "@/shared/utils/cookie/auth-cookies";
 import { convertToApiError } from "@/shared/lib/api-error";
+import { User } from "@/modules/user/types/user";
 import { AuthResponse } from "@/modules/auth/types/auth-response";
 import { WithRejectValue } from "@/modules/auth/types/with-reject-value";
-import { setAuthCookies } from "@/shared/utils/cookie/auth-cookies";
 
 type SignInDto = Pick<User, "email" | "password">;
-type SignUpDto = Pick<User, "email" | "password" | "firstName" | "lastName" | "userName" | "phoneNumber">;
+type SignUpDto = Pick<User, "email" | "password" | "firstName" | "lastName" | "userName" | "phoneNumber"> & {
+    invitationToken?: string;
+};
 
 export const signIn = createAsyncThunk<AuthResponse, SignInDto, WithRejectValue>(
     "signIn",
@@ -19,7 +21,7 @@ export const signIn = createAsyncThunk<AuthResponse, SignInDto, WithRejectValue>
                 password: signInDto.password,
             });
 
-            setAuthCookies(response.token, response.userName, !!response.isVerified, response.userRole);
+            setAuthCookies(response.token, response.userName, !!response.isVerified, response.workspaceId);
 
             return response;
         } catch (error: unknown) {
@@ -36,25 +38,11 @@ export const signUp = createAsyncThunk<AuthResponse, SignUpDto, WithRejectValue>
                 email: signUpDto.email,
                 password: signUpDto.password,
                 userName: signUpDto.userName,
-                phoneNumber: undefined,
-                firstName: undefined,
-                lastName: undefined,
+                phoneNumber: signUpDto.phoneNumber,
+                firstName: signUpDto.firstName,
+                lastName: signUpDto.lastName,
+                invitationToken: signUpDto.invitationToken,
             });
-
-            return response;
-        } catch (error: unknown) {
-            return rejectWithValue(convertToApiError(error));
-        }
-    },
-);
-
-export const signInAsGuest = createAsyncThunk<AuthResponse, void, WithRejectValue>(
-    "signInAsGuest",
-    async (_, { rejectWithValue }) => {
-        try {
-            const response = await createOne<null, AuthResponse>(apiEndpointNames.signInAsGuest, null);
-
-            setAuthCookies(response.token, response.userName, !!response.isVerified, response.userRole);
 
             return response;
         } catch (error: unknown) {

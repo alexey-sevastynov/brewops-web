@@ -1,11 +1,11 @@
 import { VoidFunc } from "@/shared/types/getter-setter-functions";
 import { AuthModeKey, authModeKeys } from "@/modules/auth/enums/auth-mode-key";
 
-export function isSignInMode(mode: AuthModeKey) {
+export function isSignInMode(mode: string) {
     return mode === authModeKeys.signIn;
 }
 
-export function isSignUpMode(mode: AuthModeKey) {
+export function isSignUpMode(mode: string) {
     return mode === authModeKeys.signUp;
 }
 
@@ -19,6 +19,14 @@ export function getAuthModeLabel(mode: AuthModeKey) {
     if (isSignUpMode(mode)) return "Реєстрація";
 
     return "";
+}
+
+export function getInitialAuthMode(modeParam?: string) {
+    if (modeParam && isSignUpMode(modeParam)) {
+        return authModeKeys.signUp;
+    }
+
+    return authModeKeys.signIn;
 }
 
 function getToggledAuthMode(currentMode: AuthModeKey) {

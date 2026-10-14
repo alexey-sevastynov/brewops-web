@@ -4,20 +4,33 @@ import { iconNames } from "@/shared/ui/icon/icon-name";
 import { VoidFunc } from "@/shared/types/getter-setter-functions";
 import { FacilityExpense } from "@/modules/facility-expense/types/facility-expense";
 
+interface ActionColumnPermissions {
+    canWrite?: boolean;
+    canDelete?: boolean;
+}
+
 export function createFacilityExpenseActionsColumn(
     onDelete: VoidFunc<string>,
     onEdit: VoidFunc<FacilityExpense>,
+    permissions?: ActionColumnPermissions,
 ) {
+    const canWrite = permissions?.canWrite ?? true;
+    const canDelete = permissions?.canDelete ?? true;
+
     const column: ColumnDef<FacilityExpense> = {
         id: "actions",
         header: "Дії",
         cell: ({ row }) => {
             const expense = row.original;
 
+            if (!canWrite && !canDelete) {
+                return null;
+            }
+
             return (
                 <div className="flex gap-2">
-                    <Button iconName={iconNames.edit} onClick={() => onEdit(expense)} />
-                    <Button iconName={iconNames.trash} onClick={() => onDelete(expense._id)} />
+                    {canWrite && <Button iconName={iconNames.edit} onClick={() => onEdit(expense)} />}
+                    {canDelete && <Button iconName={iconNames.trash} onClick={() => onDelete(expense._id)} />}
                 </div>
             );
         },

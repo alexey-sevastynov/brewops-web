@@ -6,4 +6,5 @@ export interface SignUpFormValues {
     phoneNumber?: string;
     firstName?: string;
     lastName?: string;
+    invitationToken?: string;
 }

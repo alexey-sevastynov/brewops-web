@@ -1,6 +1,7 @@
 import { DailyReport } from "@/modules/daily-report/types/daily-report";
 import { DateRange } from "@/shared/types/date-range/date-range-type";
 import { VoidFunc } from "@/shared/types/getter-setter-functions";
+import { isNonEmptyArray } from "@/shared/utils/array";
 
 export function initializeDateRangeFromDailyReports(
     dailyReports: DailyReport[],
@@ -29,5 +30,5 @@ function getLastReportDate(dates: string[]) {
 }
 
 function isDailyReportsReady(dailyReports: DailyReport[], loading: boolean) {
-    return !loading && dailyReports.length > 0;
+    return !loading && isNonEmptyArray(dailyReports);
 }

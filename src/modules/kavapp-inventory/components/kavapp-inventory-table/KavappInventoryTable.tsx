@@ -1,3 +1,4 @@
+// TODO : Remove max-lines-per-function eslint-disable when the component is refactored into smaller components
 /* eslint-disable max-lines-per-function */
 "use client";
 
@@ -14,14 +15,16 @@ import { useAppSelector } from "@/shared/lib/redux/hooks/use-app-selector";
 import { useResourceTable } from "@/shared/lib/react-table/use-resource-table";
 import { createTableConfig } from "@/shared/lib/react-table/table-config";
 import { Title } from "@/shared/ui/typography/title/Title";
+import { routeLabels } from "@/shared/constants/route-labels";
+import { WithCoffeeShopId } from "@/shared/types/with-coffee-shop-id";
 import { TableToolbox } from "@/shared/ui/table-toolbox/TableToolbox";
 import { Table } from "@/shared/ui/table/Table";
 import { TablePager } from "@/shared/ui/table-pager/TablePager";
 import { textPositions } from "@/shared/ui/typography/text-position";
 import { defaultTablePageSize } from "@/shared/lib/react-table/constants";
 import { appToast } from "@/shared/lib/toast";
-import { kavappInventoryColumns } from "@/modules/kavapp-inventory/configs/kavapp-inventory-columns";
 import { KavappInventoryItem } from "@/modules/kavapp-inventory/types/kavapp-inventory-item";
+import { kavappInventoryColumns } from "@/modules/kavapp-inventory/configs/kavapp-inventory-columns";
 import {
     KavappInventoryCategoryKey,
     kavappInventoryCategoryKeys,
@@ -34,45 +37,45 @@ import {
     syncKavappInventory,
 } from "@/modules/kavapp-inventory/model/kavapp-inventory-thunks";
 
-export function KavappInventoryTable() {
+export function KavappInventoryTable({ coffeeShopId }: WithCoffeeShopId) {
     const dispatch = useAppDispatch();
-    const inventory = useAppSelector((state) => state.kavappInventory.inventory);
-    const latestSnapshot = useAppSelector((state) => state.kavappInventory.latestSnapshot);
-    const isLoading = useAppSelector((state) => state.kavappInventory.loading);
-    const isSyncing = useAppSelector((state) => state.kavappInventory.syncing);
-
+    const kavappInventory = useAppSelector((state) => state.kavappInventory);
     const [activeCategory, setActiveCategory] = useState<KavappInventoryCategoryKey>(
         kavappInventoryCategoryKeys.product,
     );
 
     useEffect(() => {
-        dispatch(getAllKavappInventory(undefined));
-        dispatch(getLatestKavappSnapshot());
-    }, [dispatch]);
+        dispatch(getAllKavappInventory({ coffeeShopId }));
+        dispatch(getLatestKavappSnapshot({ coffeeShopId }));
+    }, [dispatch, coffeeShopId]);
 
     const filteredData: KavappInventoryItem[] = useMemo(() => {
-        if (!inventory) return [];
+        if (!kavappInventory.inventory) return [];
 
         if (activeCategory === kavappInventoryCategoryKeys.all) {
-            return [...inventory.cup, ...inventory.ingredient, ...inventory.product, ...inventory.kitchen];
+            return [
+                ...kavappInventory.inventory.cup,
+                ...kavappInventory.inventory.ingredient,
+                ...kavappInventory.inventory.product,
+                ...kavappInventory.inventory.kitchen,
+            ];
         }
 
-        return inventory[activeCategory] ?? [];
-    }, [inventory, activeCategory]);
+        return kavappInventory.inventory[activeCategory] ?? [];
+    }, [kavappInventory.inventory, activeCategory]);
 
     const handleSync = useCallback(async () => {
         try {
-            await dispatch(syncKavappInventory({})).unwrap();
+            await dispatch(syncKavappInventory({ coffeeShopId })).unwrap();
             appToast.success("Синхронізація пройшла успішно");
-            await dispatch(getAllKavappInventory(undefined));
-            await dispatch(getLatestKavappSnapshot());
+            await dispatch(getAllKavappInventory({ coffeeShopId }));
+            await dispatch(getLatestKavappSnapshot({ coffeeShopId }));
         } catch {
             appToast.error("Помилка синхронізації");
         }
-    }, [dispatch]);
+    }, [dispatch, coffeeShopId]);
 
     const resourceTable = useResourceTable<KavappInventoryItem>();
-
     const reactTable = useReactTable({
         data: filteredData,
         columns: kavappInventoryColumns,
@@ -90,20 +93,19 @@ export function KavappInventoryTable() {
         columnResizeMode: "onChange",
         meta: {
             exportFileName: "kavapp-inventory",
-            exportSheetName: "Наявність товару на торговій точці",
+            exportSheetName: routeLabels.kavappInventory,
         },
     });
-
-    const lastSyncDate = latestSnapshot?.syncDate ?? null;
 
     return (
         <div className="w-full">
             <Title textPosition={textPositions.left}>Наявність товару на торговій точці</Title>
             <div className="mb-4 flex flex-col gap-4">
                 <KavappInventoryHeader
-                    lastSyncDate={lastSyncDate}
-                    isSyncing={isSyncing}
+                    lastSyncDate={kavappInventory.latestSnapshot?.syncDate ?? null}
+                    isSyncing={kavappInventory.syncing}
                     onSync={handleSync}
+                    coffeeShopId={coffeeShopId}
                 />
                 <KavappInventoryCategoryTabs
                     activeCategory={activeCategory}
@@ -114,7 +116,7 @@ export function KavappInventoryTable() {
             <Table
                 config={createTableConfig({
                     reactTable: reactTable,
-                    isLoading: isLoading,
+                    isLoading: kavappInventory.loading,
                     noDataMessage: "Немає даних для відображення",
                     stickyHeader: true,
                 })}

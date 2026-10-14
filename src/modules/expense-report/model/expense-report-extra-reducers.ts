@@ -15,6 +15,7 @@ export const expenseReportExtraReducers = (builder: ActionReducerMapBuilder<Expe
         .addCase(getAllExpenseReports.pending, (state) => {
             state.loading = true;
             state.error = null;
+            state.data = [];
         })
         .addCase(getAllExpenseReports.fulfilled, (state, action: PayloadAction<ExpenseReport[]>) => {
             state.data = action.payload;
@@ -29,7 +30,7 @@ export const expenseReportExtraReducers = (builder: ActionReducerMapBuilder<Expe
             state.data.push(action.payload);
         })
         .addCase(deleteExpenseReport.fulfilled, (state, action) => {
-            state.data = state.data.filter((report) => report._id !== action.meta.arg);
+            state.data = state.data.filter((report) => report._id !== action.meta.arg.id);
         })
         .addCase(updateExpenseReport.fulfilled, (state, action) => {
             const index = state.data.findIndex((report) => report._id === action.payload._id);
@@ -39,4 +40,3 @@ export const expenseReportExtraReducers = (builder: ActionReducerMapBuilder<Expe
             }
         });
 };
-

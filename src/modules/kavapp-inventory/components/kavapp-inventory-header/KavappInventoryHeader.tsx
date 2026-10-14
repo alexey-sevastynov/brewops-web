@@ -8,14 +8,21 @@ import { Select } from "@/shared/ui/select/Select";
 import { formatDateToDateTime } from "@/shared/utils/date";
 import { Text } from "@/shared/ui/typography/text/Text";
 import { navigateTo } from "@/shared/utils/navigation";
+import { VoidFuncNoParam } from "@/shared/types/getter-setter-functions";
 
 interface KavappInventoryHeaderProps {
     lastSyncDate: string | null;
     isSyncing: boolean;
-    onSync: () => void;
+    onSync: VoidFuncNoParam;
+    coffeeShopId: string;
 }
 
-export function KavappInventoryHeader({ lastSyncDate, isSyncing, onSync }: KavappInventoryHeaderProps) {
+export function KavappInventoryHeader({
+    lastSyncDate,
+    isSyncing,
+    onSync,
+    coffeeShopId,
+}: KavappInventoryHeaderProps) {
     const router = useRouter();
 
     return (
@@ -37,7 +44,9 @@ export function KavappInventoryHeader({ lastSyncDate, isSyncing, onSync }: Kavap
                 <Select
                     options={[{ value: "alert-rules", label: "Налаштування сповіщень" }]}
                     placeholder="•••"
-                    onValueChange={() => navigateTo(router, routeKeys.kavappInventoryAlertRules)}
+                    onValueChange={() =>
+                        navigateTo(router, routeKeys.kavappInventoryAlertRules(coffeeShopId))
+                    }
                 />
             </div>
         </div>
