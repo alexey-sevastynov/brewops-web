@@ -29,6 +29,7 @@ export function ResourceInputField<T extends FieldValues>({
                         label={field.label}
                         type={field.type}
                         placeholder={field.placeholder}
+                        disabled={field.disabled}
                         value={controllerFieldState.field.value ?? ""}
                         onChange={(e) =>
                             controllerFieldState.field.onChange(

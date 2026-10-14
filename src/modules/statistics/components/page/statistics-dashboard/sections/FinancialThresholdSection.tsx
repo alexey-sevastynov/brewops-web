@@ -41,7 +41,6 @@ export function FinancialMetricsSection({ percentages }: PercentagesSectionProps
                 zones={rangeZoneInventoryNetAdjustment}
             />
             <ThresholdScaleCard
-                className="sm:col-span-2 lg:col-span-2"
                 title="Собівартість продуктів від виторгу (Food Cost)"
                 value={formatPercent(percentages.costPercent)}
                 currentValue={percentages.costPercent}
@@ -54,7 +53,6 @@ export function FinancialMetricsSection({ percentages }: PercentagesSectionProps
                 description={foodCostDescription}
             />
             <ThresholdScaleCard
-                className="sm:col-span-2 lg:col-span-2"
                 title="Частка списання товарів від загального виторгу"
                 value={formatPercent(percentages.writeOffPercent)}
                 currentValue={percentages.writeOffPercent}
@@ -67,7 +65,6 @@ export function FinancialMetricsSection({ percentages }: PercentagesSectionProps
                 description={writeOffDescription}
             />
             <ThresholdScaleCard
-                className="sm:col-span-2 lg:col-span-2"
                 title="Частка зарплат від загального виторгу (Labor Cost)"
                 value={formatPercent(percentages.salaryPercent)}
                 currentValue={percentages.salaryPercent}

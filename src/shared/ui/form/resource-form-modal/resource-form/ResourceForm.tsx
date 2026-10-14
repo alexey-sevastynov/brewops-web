@@ -8,12 +8,14 @@ import {
     isDateFieldType,
     isEnumFieldType,
     isInputFieldType,
+    isPasswordFieldType,
 } from "@/shared/utils/resource-field-type-guards";
 import { ResourceInputField } from "@/shared/ui/form/resource-form-modal/resource-form/resource-input-field/ResourceInputField";
 import { ResourceCheckboxField } from "@/shared/ui/form/resource-form-modal/resource-form/resource-checkbox-field/ResourceCheckboxField";
 import { ResourceSelectField } from "@/shared/ui/form/resource-form-modal/resource-form/resource-select-field/ResourceSelectField";
 import { ResourceField } from "@/shared/types/resource-field";
 import { ResourceDateField } from "@/shared/ui/form/resource-form-modal/resource-form/resource-date-field/ResourceDateField";
+import { ResourcePasswordField } from "@/shared/ui/form/resource-form-modal/resource-form/resource-password-field/ResourcePasswordField";
 
 interface ResourceFormProps<T extends FieldValues> {
     fields: ResourceField<T>[];
@@ -74,7 +76,13 @@ export function ResourceForm<T extends FieldValues>({
 
                 if (isDateFieldType(field.type)) {
                     return (
-                        <ResourceDateField
+                        <ResourceDateField key={field.name} field={field} control={control} errors={errors} />
+                    );
+                }
+
+                if (isPasswordFieldType(field.type)) {
+                    return (
+                        <ResourcePasswordField
                             key={field.name}
                             field={field}
                             control={control}

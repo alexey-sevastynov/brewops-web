@@ -1,14 +1,22 @@
+"use client";
+
+import { useParams } from "next/navigation";
 import { cn } from "@/shared/lib/cn";
 import { InvertedCorner } from "@/shared/layout/toolbar/inverted-corner/InvertedCorner";
 import { ToolbarAvatarMenu } from "@/shared/layout/toolbar/toolbar-avatar-menu/ToolbarAvatarMenu";
+import { useAppSelector } from "@/shared/lib/redux/hooks/use-app-selector";
+import { Text } from "@/shared/ui/typography/text/Text";
+import { selectCoffeeShopById } from "@/modules/coffee-shop/model/coffee-shop-selectors";
 
 interface ToolbarProps {
     className?: string;
     userName?: string;
-    userRole?: string;
 }
 
-export function Toolbar({ className, userName, userRole }: ToolbarProps) {
+export function Toolbar({ className, userName }: ToolbarProps) {
+    const params = useParams<{ coffeeShopId?: string }>();
+    const coffeeShop = useAppSelector((state) => selectCoffeeShopById(state, params.coffeeShopId));
+
     return (
         <header
             className={cn(
@@ -17,7 +25,8 @@ export function Toolbar({ className, userName, userRole }: ToolbarProps) {
             )}
         >
             <InvertedCorner className="absolute top-full left-0" fillColor="fill-sidebar" />
-            <ToolbarAvatarMenu userName={userName} userRole={userRole} />
+            {coffeeShop?.name ? <Text>{coffeeShop.name}</Text> : null}
+            <ToolbarAvatarMenu userName={userName} />
         </header>
     );
 }

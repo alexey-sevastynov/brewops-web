@@ -1,0 +1,16 @@
+export const routeLabels = {
+    home: "Головна",
+    coffeeShopHome: "Кавʼярня",
+    dashboard: "Dashboard",
+    employees: "Працівники",
+    dailyReports: "Щоденні звіти",
+    expenseReports: "Звіти по витратах",
+    facilityExpenses: "Оренда та утримання приміщення",
+    inventoryAudits: "Аудити інвентаризації",
+    ownerWithdrawals: "Виведення коштів власника",
+    kavappInventory: "Наявність товару на торговій точці",
+    kavappInventoryAlertRules: "Правила сповіщень",
+    settings: "Налаштування",
+    workspaceSettings: "Робочий простір",
+    profileSettings: "Профіль",
+} as const;

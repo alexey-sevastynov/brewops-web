@@ -16,13 +16,17 @@ import { buttonVariantKeys } from "@/shared/ui/button/button-variant-keys";
 
 interface ToolbarAvatarMenuProps {
     userName?: string;
-    userRole?: string;
 }
 
-export function ToolbarAvatarMenu({ userName, userRole }: ToolbarAvatarMenuProps) {
+export function ToolbarAvatarMenu({ userName }: ToolbarAvatarMenuProps) {
     const router = useRouter();
     const dispatch = useAppDispatch();
     const isUserLoading = useAppSelector((state) => state.auth.isLoading);
+    const workspaceName = useAppSelector((state) => {
+        const selectedWorkspaceId = state.workspace.selectedWorkspaceId;
+
+        return state.workspace.workspaces.find(({ _id }) => _id === selectedWorkspaceId)?.name;
+    });
 
     const onLogout = () => {
         dispatch(signOut());
@@ -38,7 +42,7 @@ export function ToolbarAvatarMenu({ userName, userRole }: ToolbarAvatarMenuProps
                 <DropdownContent className="right-0 min-w-72 overflow-hidden p-1">
                     <ToolbarAvatarMenuUserInfo
                         userName={userName}
-                        userRole={userRole}
+                        workspaceName={workspaceName}
                         isUserLoading={isUserLoading}
                     />
                     <ToolbarThemeModeSwitcher />

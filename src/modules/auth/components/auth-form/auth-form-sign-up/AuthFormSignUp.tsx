@@ -11,7 +11,12 @@ import { PasswordInput } from "@/shared/ui/password-input/PasswordInput";
 import { SignUpFormValues } from "@/modules/auth/types/sign-up-form-values";
 import { register } from "@/modules/auth/components/auth-form/auth-form-sign-up/authFormSignUp.funcs";
 
-export function AuthFormSignUp() {
+interface AuthFormSignUpProps {
+    defaultEmail?: string;
+    invitationToken?: string;
+}
+
+export function AuthFormSignUp({ defaultEmail, invitationToken }: AuthFormSignUpProps = {}) {
     const dispatch = useAppDispatch();
     const errorMessage = useAppSelector((state) => state.auth.error);
     const token = useAppSelector((state) => state.auth.token);
@@ -22,15 +27,24 @@ export function AuthFormSignUp() {
         handleSubmit,
         watch,
         formState: { errors },
-    } = useForm<SignUpFormValues>();
+    } = useForm<SignUpFormValues>({
+        defaultValues: { email: defaultEmail },
+    });
     const password = watch("password");
 
     const onSubmit = (data: SignUpFormValues) => {
-        register(dispatch, data);
+        register(dispatch, { ...data, invitationToken });
     };
 
     return (
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+            {invitationToken && (
+                <NotificationMessage
+                    message="Вас запрошено до робочого простору! Заповніть форму для завершення реєстрації."
+                    type={notificationMessageKeys.info}
+                    autoClose={0}
+                />
+            )}
             <ValidatedInput
                 name="userName"
                 control={control}

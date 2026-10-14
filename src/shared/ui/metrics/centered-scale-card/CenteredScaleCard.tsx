@@ -3,6 +3,7 @@ import { cn } from "@/shared/lib/cn";
 import { Text } from "@/shared/ui/typography/text/Text";
 import { textSizes } from "@/shared/ui/typography/text-size";
 import { textWeights } from "@/shared/ui/typography/text-weight";
+import { Card } from "@/shared/ui/card/Card";
 
 type ZoneType = "ideal" | "normal" | "critical";
 
@@ -49,7 +50,6 @@ export function CenteredScaleCard({
     maxValue,
     zones,
     description,
-    className,
 }: CenteredScaleCardProps) {
     const clamped = clamp(currentValue, minValue, maxValue);
     const range = maxValue - minValue;
@@ -65,10 +65,7 @@ export function CenteredScaleCard({
     }, [clamped, zones, minValue, range]);
 
     return (
-        <div
-            className={cn("rounded-xl border p-4 shadow-sm transition hover:shadow-md", className)}
-            tabIndex={0}
-        >
+        <Card>
             <div className="flex items-start justify-between gap-4">
                 <Text textSize={textSizes.sm}>{title}</Text>
 
@@ -111,7 +108,7 @@ export function CenteredScaleCard({
             </div>
 
             {description && <div className="text-muted-foreground mt-3 text-[13px]">{description}</div>}
-        </div>
+        </Card>
     );
 }
 

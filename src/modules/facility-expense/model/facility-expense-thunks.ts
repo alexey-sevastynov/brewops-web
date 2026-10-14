@@ -8,53 +8,79 @@ import { FacilityExpense } from "@/modules/facility-expense/types/facility-expen
 
 type CreateFacilityExpenseDto = Omit<FacilityExpense, "_id">;
 
-export const getAllFacilityExpenses = createAsyncThunk<FacilityExpense[], void, { rejectValue: AxiosError }>(
-    "allFacilityExpenses",
-    async () => {
-        const allExpenses = await getAll<FacilityExpense>(apiEndpointNames.facilityExpense);
-        return allExpenses;
-    },
-);
+interface CreateFacilityExpensePayload {
+    coffeeShopId: string;
+    expense: CreateFacilityExpenseDto;
+}
 
-export const createFacilityExpense = createAsyncThunk<FacilityExpense, CreateFacilityExpenseDto, WithRejectValue>(
-    "createFacilityExpense",
-    async (expense: CreateFacilityExpenseDto, { rejectWithValue }) => {
-        try {
-            const response = await createOne<CreateFacilityExpenseDto, FacilityExpense>(
-                apiEndpointNames.facilityExpense,
-                expense,
-            );
-            return response;
-        } catch (error: unknown) {
-            return rejectWithValue(convertToApiError(error));
-        }
-    },
-);
+interface UpdateFacilityExpensePayload {
+    coffeeShopId: string;
+    expense: FacilityExpense;
+}
 
-export const deleteFacilityExpense = createAsyncThunk<FacilityExpense, string, WithRejectValue>(
-    "deleteFacilityExpense",
-    async (_id: string, { rejectWithValue }) => {
-        try {
-            const response = await deleteOne<FacilityExpense>(apiEndpointNames.facilityExpense, _id);
-            return response;
-        } catch (error: unknown) {
-            return rejectWithValue(convertToApiError(error));
-        }
-    },
-);
+interface DeleteFacilityExpensePayload {
+    coffeeShopId: string;
+    id: string;
+}
 
-export const updateFacilityExpense = createAsyncThunk<FacilityExpense, FacilityExpense, WithRejectValue>(
-    "updateFacilityExpense",
-    async (expense: FacilityExpense, { rejectWithValue }) => {
-        try {
-            const response = await updateOne<FacilityExpense>(
-                apiEndpointNames.facilityExpense,
-                expense._id,
-                expense,
-            );
-            return response;
-        } catch (error: unknown) {
-            return rejectWithValue(convertToApiError(error));
-        }
-    },
-);
+export const getAllFacilityExpenses = createAsyncThunk<
+    FacilityExpense[],
+    string,
+    { rejectValue: AxiosError }
+>("allFacilityExpenses", async (coffeeShopId) => {
+    const allExpenses = await getAll<FacilityExpense>(apiEndpointNames.facilityExpenses(coffeeShopId));
+
+    return allExpenses;
+});
+
+export const createFacilityExpense = createAsyncThunk<
+    FacilityExpense,
+    CreateFacilityExpensePayload,
+    WithRejectValue
+>("createFacilityExpense", async ({ coffeeShopId, expense }, { rejectWithValue }) => {
+    try {
+        const response = await createOne<CreateFacilityExpenseDto, FacilityExpense>(
+            apiEndpointNames.facilityExpenses(coffeeShopId),
+            expense,
+        );
+
+        return response;
+    } catch (error: unknown) {
+        return rejectWithValue(convertToApiError(error));
+    }
+});
+
+export const deleteFacilityExpense = createAsyncThunk<
+    FacilityExpense,
+    DeleteFacilityExpensePayload,
+    WithRejectValue
+>("deleteFacilityExpense", async ({ coffeeShopId, id }, { rejectWithValue }) => {
+    try {
+        const response = await deleteOne<FacilityExpense>(
+            apiEndpointNames.facilityExpenses(coffeeShopId),
+            id,
+        );
+
+        return response;
+    } catch (error: unknown) {
+        return rejectWithValue(convertToApiError(error));
+    }
+});
+
+export const updateFacilityExpense = createAsyncThunk<
+    FacilityExpense,
+    UpdateFacilityExpensePayload,
+    WithRejectValue
+>("updateFacilityExpense", async ({ coffeeShopId, expense }, { rejectWithValue }) => {
+    try {
+        const response = await updateOne<FacilityExpense>(
+            apiEndpointNames.facilityExpenses(coffeeShopId),
+            expense._id,
+            expense,
+        );
+
+        return response;
+    } catch (error: unknown) {
+        return rejectWithValue(convertToApiError(error));
+    }
+});

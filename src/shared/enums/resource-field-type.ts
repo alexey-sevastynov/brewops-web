@@ -5,6 +5,7 @@ export const resourceFieldTypes = {
     select: "select",
     textarea: "textarea",
     date: "date",
+    password: "password",
 } as const;
 
 export type ResourceFieldType = (typeof resourceFieldTypes)[keyof typeof resourceFieldTypes];

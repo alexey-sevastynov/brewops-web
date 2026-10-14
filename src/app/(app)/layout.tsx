@@ -3,20 +3,16 @@
 import { AppLayout } from "@/shared/layout/app-layout/AppLayout";
 import { cookieKeys } from "@/shared/utils/cookie/cookie-key";
 import { getServerCookie } from "@/shared/utils/cookie/cookie-server";
+import { userErrorMessages } from "@/modules/user/constants/error-messages";
 
-interface AppLayoutProps {
+interface ProtectedLayoutProps {
     children: React.ReactNode;
 }
 
-export default async function Layout({ children }: AppLayoutProps) {
+export default async function Layout({ children }: ProtectedLayoutProps) {
     const userName = await getServerCookie(cookieKeys.userName);
-    const userRole = await getServerCookie(cookieKeys.userRole);
 
-    if (!userName || !userRole) throw new Error("User data is missing.");
+    if (!userName) throw new Error(userErrorMessages.missingUserData);
 
-    return (
-        <AppLayout userName={userName} userRole={userRole}>
-            {children}
-        </AppLayout>
-    );
+    return <AppLayout userName={userName}>{children}</AppLayout>;
 }

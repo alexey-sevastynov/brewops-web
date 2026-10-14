@@ -9,6 +9,7 @@ import { iconColors } from "@/shared/ui/icon/icon-color";
 import { iconStrokeWidths } from "@/shared/ui/icon/icon-stroke-width";
 import { textSizes } from "@/shared/ui/typography/text-size";
 import { VoidFuncNoParam } from "@/shared/types/getter-setter-functions";
+import { Card } from "@/shared/ui/card/Card";
 
 interface MetricCardProps {
     title: string;
@@ -21,13 +22,12 @@ interface MetricCardProps {
 
 export function MetricCard({ title, value, iconName, description, className, onClick }: MetricCardProps) {
     return (
-        <div
+        <Card
             className={cn(
                 "rounded-xl border p-4 shadow-sm",
                 onClick && "cursor-pointer transition hover:shadow-md",
                 className,
             )}
-            tabIndex={0}
             onClick={onClick}
         >
             <div className="flex items-center justify-between gap-4">
@@ -44,6 +44,6 @@ export function MetricCard({ title, value, iconName, description, className, onC
                 {value}
             </Text>
             {description && <div className="mt-1 text-[13px] text-gray-500">{description}</div>}
-        </div>
+        </Card>
     );
 }
