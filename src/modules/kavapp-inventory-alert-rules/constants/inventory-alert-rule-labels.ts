@@ -7,6 +7,7 @@ export const inventoryAlertRuleLabels: Record<keyof InventoryAlertRule, string> 
     kavappItemId: "Унікальний номер",
     unit: "Одиниця вимірювання",
     threshold: "Мінімальний залишок",
+    isIgnored: "Ігнорувати",
     description: "Примітка",
     createdAt: "Створено",
     updatedAt: "Оновлено",

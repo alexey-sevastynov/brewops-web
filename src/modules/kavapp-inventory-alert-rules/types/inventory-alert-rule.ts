@@ -6,7 +6,8 @@ export interface InventoryAlertRule extends WithObjectId, EntityTimestamps {
     itemType: Exclude<KavappInventoryCategoryKey, "all">;
     kavappItemId: string;
     name: string;
-    threshold: number;
+    isIgnored: boolean;
+    threshold?: number;
     unit?: number;
     description?: string;
 }

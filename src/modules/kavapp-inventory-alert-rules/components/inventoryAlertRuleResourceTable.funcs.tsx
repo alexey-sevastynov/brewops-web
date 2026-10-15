@@ -70,7 +70,8 @@ function createInventoryAlertRulePayload(
             name: kavappCatalogItem.name,
             unit: kavappCatalogItem.units,
             threshold: inventoryAlertRule.threshold,
-            description: inventoryAlertRule.description || undefined,
+            isIgnored: inventoryAlertRule.isIgnored,
+            description: inventoryAlertRule.description,
         };
     }
 
@@ -80,6 +81,7 @@ function createInventoryAlertRulePayload(
         name: inventoryAlertRule.name,
         unit: inventoryAlertRule.unit,
         threshold: inventoryAlertRule.threshold,
-        description: inventoryAlertRule.description || undefined,
+        isIgnored: inventoryAlertRule.isIgnored,
+        description: inventoryAlertRule.description,
     };
 }

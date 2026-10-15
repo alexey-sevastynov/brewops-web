@@ -8,6 +8,7 @@ export const inventoryAlertRuleProps: Record<keyof InventoryAlertRule, string> =
     kavappItemId: nameOf<InventoryAlertRule>("kavappItemId"),
     unit: nameOf<InventoryAlertRule>("unit"),
     threshold: nameOf<InventoryAlertRule>("threshold"),
+    isIgnored: nameOf<InventoryAlertRule>("isIgnored"),
     description: nameOf<InventoryAlertRule>("description"),
     createdAt: nameOf<InventoryAlertRule>("createdAt"),
     updatedAt: nameOf<InventoryAlertRule>("updatedAt"),

@@ -6,6 +6,7 @@ import { kavappInventoryCategoryLabels } from "@/modules/kavapp-inventory/consta
 import { inventoryAlertRuleProps } from "@/modules/kavapp-inventory-alert-rules/constants/inventory-alert-rule-props";
 import { inventoryAlertRuleLabels } from "@/modules/kavapp-inventory-alert-rules/constants/inventory-alert-rule-labels";
 import { KavappInventoryCategoryKey } from "@/modules/kavapp-inventory/enums/kavapp-inventory-category-key";
+import { BooleanCell } from "@/shared/ui/table/table-body/table-row/boolean-cell/BooleanCell";
 
 export const inventoryAlertRuleColumns: ColumnDef<InventoryAlertRule>[] = [
     createTableColumn<InventoryAlertRule>({
@@ -28,8 +29,25 @@ export const inventoryAlertRuleColumns: ColumnDef<InventoryAlertRule>[] = [
         },
     }),
     createTableColumn<InventoryAlertRule>({
+        accessorKey: inventoryAlertRuleProps.isIgnored,
+        header: inventoryAlertRuleLabels.isIgnored,
+        cell: (cellInfo) => <BooleanCell cellInfo={cellInfo} />,
+        meta: {
+            label: inventoryAlertRuleLabels.isIgnored,
+            resourceFieldType: resourceFieldTypes.checkbox,
+            filterable: true,
+        },
+    }),
+    createTableColumn<InventoryAlertRule>({
         accessorKey: inventoryAlertRuleProps.threshold,
         header: inventoryAlertRuleLabels.threshold,
+        cell: ({ row }) => {
+            if (row.original.isIgnored) {
+                return <span className="text-muted-foreground">—</span>;
+            }
+
+            return row.original.threshold;
+        },
         meta: {
             label: inventoryAlertRuleLabels.threshold,
             resourceFieldType: resourceFieldTypes.number,

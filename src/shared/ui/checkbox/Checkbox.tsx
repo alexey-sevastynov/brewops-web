@@ -34,7 +34,10 @@ export function Checkbox({ label, className, ...props }: CheckboxProps) {
             </CheckboxPrimitive.Root>
 
             {label && (
-                <label htmlFor={generatedId} className="cursor-pointer leading-none font-medium">
+                <label
+                    htmlFor={generatedId}
+                    className="text-muted-foreground cursor-pointer leading-none font-medium"
+                >
                     {label}
                 </label>
             )}

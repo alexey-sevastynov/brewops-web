@@ -16,8 +16,14 @@ export const createInventoryAlertRuleFields = (
         options: catalogOptions,
     },
     {
+        name: inventoryAlertRuleProps.isIgnored as keyof InventoryAlertRule,
+        required: false,
+        label: inventoryAlertRuleLabels.isIgnored,
+        type: resourceFieldTypes.checkbox,
+    },
+    {
         name: inventoryAlertRuleProps.threshold as keyof InventoryAlertRule,
-        required: true,
+        required: false,
         label: inventoryAlertRuleLabels.threshold,
         type: resourceFieldTypes.number,
     },

@@ -56,6 +56,7 @@ export function InventoryAlertRuleResourceTable({ coffeeShopId }: WithCoffeeShop
             data={inventoryAlertRules}
             isLoading={isLoading}
             columns={inventoryAlertRuleColumns}
+            defaultValues={{ threshold: 0, isIgnored: false }}
             formFields={createInventoryAlertRuleFields(
                 createInventoryAlertRuleCatalogOptions(kavappCatalogItems, inventoryAlertRules),
             )}
