@@ -14,6 +14,10 @@ export const employeeStatProps: Record<keyof EmployeeStat, string> = {
     averageCostPercent: nameOf<EmployeeStat>("averageCostPercent"),
     averageWriteOffPercent: nameOf<EmployeeStat>("averageWriteOffPercent"),
     averageSalaryPercent: nameOf<EmployeeStat>("averageSalaryPercent"),
+    averageChecksPerShift: nameOf<EmployeeStat>("averageChecksPerShift"),
+    averageCheck: nameOf<EmployeeStat>("averageCheck"),
+    averageItemsSoldPerShift: nameOf<EmployeeStat>("averageItemsSoldPerShift"),
+    averageItemsPerCheck: nameOf<EmployeeStat>("averageItemsPerCheck"),
 } as const;
 
 export const employeeStatLabels: Record<keyof EmployeeStat, string> = {
@@ -29,12 +33,20 @@ export const employeeStatLabels: Record<keyof EmployeeStat, string> = {
     averageCostPercent: "Середня частка собівартості",
     averageWriteOffPercent: "Середня частка списань",
     averageSalaryPercent: "Середня частка зарплати",
+    averageChecksPerShift: "Середня кількість чеків / зміна",
+    averageCheck: "Середній чек",
+    averageItemsSoldPerShift: "Продано позицій / зміна",
+    averageItemsPerCheck: "Позицій у чеку",
 } as const;
 
 export const teamStatisticsSortOptions = [
     { value: "default", label: "Без сортування" },
     { value: employeeStatProps.averageRevenuePerShift, label: employeeStatLabels.averageRevenuePerShift },
     { value: employeeStatProps.averageNetProfit, label: employeeStatLabels.averageNetProfit },
+    { value: employeeStatProps.averageChecksPerShift, label: employeeStatLabels.averageChecksPerShift },
+    { value: employeeStatProps.averageCheck, label: employeeStatLabels.averageCheck },
+    { value: employeeStatProps.averageItemsSoldPerShift, label: employeeStatLabels.averageItemsSoldPerShift },
+    { value: employeeStatProps.averageItemsPerCheck, label: employeeStatLabels.averageItemsPerCheck },
     { value: employeeStatProps.averageCostPercent, label: employeeStatLabels.averageCostPercent },
     { value: employeeStatProps.averageWriteOffPercent, label: employeeStatLabels.averageWriteOffPercent },
     { value: employeeStatProps.averageSalaryPercent, label: employeeStatLabels.averageSalaryPercent },

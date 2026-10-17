@@ -8,34 +8,74 @@ type NumericKey<T> = {
     [K in keyof T]: T[K] extends number ? K : never;
 }[keyof T];
 
+type SortDirection = "ascending" | "descending";
+
 function isNumericKey<T>(object: T, key: PropertyKey): key is NumericKey<T> {
     return typeof object[key as keyof T] === typeNames.number;
 }
 
+function getSortDirection(metric: TeamStatisticsSortMetric): SortDirection {
+    switch (metric) {
+        case employeeStatProps.averageCostPercent:
+        case employeeStatProps.averageWriteOffPercent:
+        case employeeStatProps.averageSalaryPercent:
+            return "ascending";
+
+        default:
+            return "descending";
+    }
+}
+
+function getEmployeeMetricValue(employee: EmployeeStat, metric: TeamStatisticsSortMetric): number {
+    if (isNumericKey(employee, metric)) {
+        const value = employee[metric];
+
+        return value;
+    }
+
+    return 0;
+}
+
+function compareEmployeeValues(firstValue: number, secondValue: number, direction: SortDirection): number {
+    const difference = firstValue - secondValue;
+
+    if (direction === "ascending") {
+        return difference;
+    }
+
+    return -difference;
+}
+
+function compareEmployees(
+    firstEmployee: EmployeeStat,
+    secondEmployee: EmployeeStat,
+    metric: TeamStatisticsSortMetric,
+    direction: SortDirection,
+): number {
+    const firstValue = getEmployeeMetricValue(firstEmployee, metric);
+    const secondValue = getEmployeeMetricValue(secondEmployee, metric);
+
+    const comparison = compareEmployeeValues(firstValue, secondValue, direction);
+
+    return comparison;
+}
+
 export function getSortedEmployees(employees: EmployeeStat[], activeSortMetric: TeamStatisticsSortMetric) {
-    if (activeSortMetric === "default") return [...employees];
+    const sortedEmployees = [...employees];
 
-    return [...employees].sort((firstEmployee, secondEmployee) => {
-        const firstValue = isNumericKey(firstEmployee, activeSortMetric)
-            ? firstEmployee[activeSortMetric]
-            : 0;
+    if (activeSortMetric === "default") {
+        return sortedEmployees;
+    }
 
-        const secondValue = isNumericKey(secondEmployee, activeSortMetric)
-            ? secondEmployee[activeSortMetric]
-            : 0;
+    const direction = getSortDirection(activeSortMetric);
 
-        switch (activeSortMetric) {
-            case employeeStatProps.averageRevenuePerShift:
-            case employeeStatProps.averageNetProfit:
-                return secondValue - firstValue;
-            case employeeStatProps.averageCostPercent:
-            case employeeStatProps.averageWriteOffPercent:
-            case employeeStatProps.averageSalaryPercent:
-                return firstValue - secondValue;
-            default:
-                return 0;
-        }
+    sortedEmployees.sort((firstEmployee, secondEmployee) => {
+        const comparison = compareEmployees(firstEmployee, secondEmployee, activeSortMetric, direction);
+
+        return comparison;
     });
+
+    return sortedEmployees;
 }
 
 export function checkIsTopPerformer(cardIndex: number, activeSortMetric: TeamStatisticsSortMetric) {

@@ -1,34 +1,13 @@
-import { MetricCard } from "@/shared/ui/metrics/metric-card/MetricCard";
 import { formatUah } from "@/shared/utils/currency";
 import { formatPercent } from "@/shared/utils/number";
-import { formatDateToShortDate } from "@/shared/utils/date";
-import { IconName, iconNames } from "@/shared/ui/icon/icon-name";
+import { iconNames } from "@/shared/ui/icon/icon-name";
 import { Text } from "@/shared/ui/typography/text/Text";
-import {
-    DailyStatisticHighlight,
-    StatisticsHighlights,
-} from "@/modules/statistics/types/statistics-highlights";
+import { StatisticsHighlights } from "@/modules/statistics/types/statistics-highlights";
+import { HighlightPair } from "@/modules/statistics/components/page/statistics-dashboard/sections/highlights-section/HighlightPair";
+import { KavappHighlights } from "@/modules/statistics/components/page/statistics-dashboard/sections/highlights-section/kavapp-highlights/KavappHighlights";
 
 interface HighlightsSectionProps {
     highlights?: StatisticsHighlights;
-}
-
-interface HighlightPairProps {
-    title: string;
-    iconName: IconName;
-    best: DailyStatisticHighlight;
-    worst: DailyStatisticHighlight;
-    bestTitle: string;
-    worstTitle: string;
-    formatValue: (value: number) => string;
-}
-
-interface HighlightCardProps {
-    title: string;
-    value: string;
-    iconName: IconName;
-    highlight: DailyStatisticHighlight;
-    variant: "best" | "worst";
 }
 
 export function HighlightsSection({ highlights }: HighlightsSectionProps) {
@@ -50,7 +29,6 @@ export function HighlightsSection({ highlights }: HighlightsSectionProps) {
                     worstTitle="Мінімальна за день"
                     formatValue={formatUah}
                 />
-
                 <HighlightPair
                     title="Чистий прибуток"
                     iconName={iconNames.piggyBank}
@@ -60,7 +38,6 @@ export function HighlightsSection({ highlights }: HighlightsSectionProps) {
                     worstTitle="Мінімальний за день"
                     formatValue={formatUah}
                 />
-
                 <HighlightPair
                     title="Готівковий виторг"
                     iconName={iconNames.banknote}
@@ -70,7 +47,6 @@ export function HighlightsSection({ highlights }: HighlightsSectionProps) {
                     worstTitle="Мінімальний за день"
                     formatValue={formatUah}
                 />
-
                 <HighlightPair
                     title="Безготівковий виторг"
                     iconName={iconNames.creditCard}
@@ -80,7 +56,6 @@ export function HighlightsSection({ highlights }: HighlightsSectionProps) {
                     worstTitle="Мінімальний за день"
                     formatValue={formatUah}
                 />
-
                 <HighlightPair
                     title="Food Cost"
                     iconName={iconNames.percent}
@@ -90,7 +65,6 @@ export function HighlightsSection({ highlights }: HighlightsSectionProps) {
                     worstTitle="Найвищий за день"
                     formatValue={formatPercent}
                 />
-
                 <HighlightPair
                     title="Списання"
                     iconName={iconNames.trash2}
@@ -100,73 +74,8 @@ export function HighlightsSection({ highlights }: HighlightsSectionProps) {
                     worstTitle="Найвище за день"
                     formatValue={formatPercent}
                 />
+                <KavappHighlights highlights={highlights} />
             </div>
         </section>
-    );
-}
-
-function HighlightPair({
-    title,
-    iconName,
-    best,
-    worst,
-    bestTitle,
-    worstTitle,
-    formatValue,
-}: HighlightPairProps) {
-    return (
-        <div className="flex min-w-0 flex-col gap-2">
-            <Text className="text-sm font-medium">{title}</Text>
-
-            <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-2">
-                <HighlightCard
-                    title={bestTitle}
-                    value={formatValue(best.value)}
-                    iconName={iconName}
-                    highlight={best}
-                    variant="best"
-                />
-
-                <HighlightCard
-                    title={worstTitle}
-                    value={formatValue(worst.value)}
-                    iconName={iconName}
-                    highlight={worst}
-                    variant="worst"
-                />
-            </div>
-        </div>
-    );
-}
-
-function HighlightCard({ title, value, iconName, highlight, variant }: HighlightCardProps) {
-    const isBest = variant === "best";
-
-    const className = isBest
-        ? "h-full border-emerald-500/30 bg-emerald-500/[0.02] dark:bg-emerald-500/[0.05]"
-        : "h-full border-rose-500/30 bg-rose-500/[0.02] dark:bg-rose-500/[0.05]";
-
-    return (
-        <MetricCard
-            title={title}
-            value={value}
-            iconName={iconName}
-            className={className}
-            description={<HighlightDescription highlight={highlight} />}
-        />
-    );
-}
-
-function HighlightDescription({ highlight }: { highlight: DailyStatisticHighlight }) {
-    return (
-        <div className="mt-1 min-w-0 text-[13px] text-gray-500 dark:text-gray-400">
-            <div>{formatDateToShortDate(highlight.date)}</div>
-
-            {highlight.employeeName?.trim() && (
-                <div className="truncate font-medium text-gray-700 dark:text-gray-300">
-                    {highlight.employeeName.trim()}
-                </div>
-            )}
-        </div>
     );
 }

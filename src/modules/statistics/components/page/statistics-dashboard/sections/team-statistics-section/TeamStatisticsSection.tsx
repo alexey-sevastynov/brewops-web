@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { MetricCard } from "@/shared/ui/metrics/metric-card/MetricCard";
 import { formatUah } from "@/shared/utils/currency";
+import { formatNumber } from "@/shared/utils/number";
 import { Text } from "@/shared/ui/typography/text/Text";
 import { textSizes } from "@/shared/ui/typography/text-size";
 import { textWeights } from "@/shared/ui/typography/text-weight";
@@ -16,6 +17,7 @@ import {
 import { TeamStatisticsSortMetric } from "@/modules/statistics/components/page/statistics-dashboard/sections/team-statistics-section/types";
 import {
     employeeStatLabels,
+    employeeStatProps,
     teamStatisticsSortOptions,
 } from "@/modules/statistics/components/page/statistics-dashboard/sections/team-statistics-section/cosntants";
 
@@ -40,7 +42,21 @@ export function TeamStatisticsSection({ employees }: TeamStatisticsSectionProps)
     if (!employees || employees.length === 0) return null;
 
     const sortedEmployeesList = getSortedEmployees(employees, activeSortMetric);
-    const selectOptionsList = teamStatisticsSortOptions.map((option) => ({
+    const hasKavappData = employees.some((emp) => emp.averageCheck !== undefined);
+    const availableSortOptions = teamStatisticsSortOptions.filter((option) => {
+        if (
+            option.value === employeeStatProps.averageChecksPerShift ||
+            option.value === employeeStatProps.averageCheck ||
+            option.value === employeeStatProps.averageItemsSoldPerShift ||
+            option.value === employeeStatProps.averageItemsPerCheck
+        ) {
+            return hasKavappData;
+        }
+
+        return true;
+    });
+
+    const selectOptionsList = availableSortOptions.map((option) => ({
         value: option.value,
         label: option.label,
     }));
@@ -132,6 +148,34 @@ function EmployeeStatisticsDescription({ employees, employee }: EmployeeStatisti
                         label={employeeStatLabels.averageSalaryPercent}
                         value={`${employee.averageSalaryPercent}%`}
                     />
+
+                    {employee.averageChecksPerShift && (
+                        <EmployeeStatisticsRow
+                            label={employeeStatLabels.averageChecksPerShift}
+                            value={formatNumber(employee.averageChecksPerShift)}
+                        />
+                    )}
+
+                    {employee.averageCheck && (
+                        <EmployeeStatisticsRow
+                            label={employeeStatLabels.averageCheck}
+                            value={formatUah(employee.averageCheck)}
+                        />
+                    )}
+
+                    {employee.averageItemsSoldPerShift && (
+                        <EmployeeStatisticsRow
+                            label={employeeStatLabels.averageItemsSoldPerShift}
+                            value={formatNumber(employee.averageItemsSoldPerShift)}
+                        />
+                    )}
+
+                    {employee.averageItemsPerCheck && (
+                        <EmployeeStatisticsRow
+                            label={employeeStatLabels.averageItemsPerCheck}
+                            value={formatNumber(employee.averageItemsPerCheck, 2)}
+                        />
+                    )}
                 </div>
             )}
         </div>

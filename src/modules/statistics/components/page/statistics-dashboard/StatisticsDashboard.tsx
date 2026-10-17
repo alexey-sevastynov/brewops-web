@@ -10,7 +10,7 @@ import { PercentagesSection } from "@/modules/statistics/components/page/statist
 import { CoffeeShopStatistics } from "@/modules/statistics/types/statistic-coffee-shop";
 import { FinancialMetricsSection } from "@/modules/statistics/components/page/statistics-dashboard/sections/FinancialThresholdSection";
 import { FacilityExpenseSection } from "@/modules/statistics/components/page/statistics-dashboard/sections/FacilityExpenseSection";
-import { HighlightsSection } from "@/modules/statistics/components/page/statistics-dashboard/sections/HighlightsSection";
+import { HighlightsSection } from "@/modules/statistics/components/page/statistics-dashboard/sections/highlights-section/HighlightsSection";
 
 interface StatisticsDashboardProps {
     statisticsData: CoffeeShopStatistics;
