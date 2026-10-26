@@ -27,7 +27,6 @@ export function Select({
     options,
     value: externalValue,
     onValueChange,
-    placeholder = "Виберіть...",
     className,
     ...props
 }: MRSelectProps) {
@@ -52,7 +51,7 @@ export function Select({
                     onBlur={() => setIsFocused(false)}
                 >
                     <span className="mr-2 w-full truncate text-left">
-                        <SelectPrimitive.Value placeholder={placeholder} />
+                        <SelectPrimitive.Value />
                     </span>
                     <SelectPrimitive.Icon>
                         <ChevronDown className="h-4 w-4" />

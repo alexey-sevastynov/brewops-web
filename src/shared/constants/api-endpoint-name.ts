@@ -6,6 +6,8 @@ export const apiEndpointNames = {
     mailVerification: "/mail-verification/confirm",
     employees: (coffeeShopId: string) => `/coffee-shops/${coffeeShopId}/employees`,
     dailyReports: (coffeeShopId: string) => `/coffee-shops/${coffeeShopId}/daily-reports`,
+    dailyReportsSyncKavapp: (coffeeShopId: string, date: string) =>
+        `/coffee-shops/${coffeeShopId}/daily-reports/sync-kavapp?date=${date}`,
     expenseReports: (coffeeShopId: string) => `/coffee-shops/${coffeeShopId}/expense-reports`,
     facilityExpenses: (coffeeShopId: string) => `/coffee-shops/${coffeeShopId}/facility-expenses`,
     inventoryAudits: (coffeeShopId: string) => `/coffee-shops/${coffeeShopId}/inventory-audits`,

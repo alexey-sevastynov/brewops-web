@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-
+import { apiClient } from "@/shared/lib/axios";
 import { apiEndpointNames } from "@/shared/constants/api-endpoint-name";
 import { createOne, deleteOne, getAll, updateOne } from "@/shared/services/crud-service";
 import { convertToApiError } from "@/shared/lib/api-error";
@@ -20,6 +20,17 @@ interface UpdateDailyReportPayload extends WithCoffeeShopId {
 
 interface DeleteDailyReportPayload extends WithCoffeeShopId {
     id: string;
+}
+
+interface DailyReportKavappSyncData {
+    cashRevenue: number;
+    terminalRevenue: number;
+    costOfGoods: number;
+    productWriteOffs: number;
+}
+
+interface FetchKavappSyncPayload extends WithCoffeeShopId {
+    date: string;
 }
 
 export const getAllDailyReports = createAsyncThunk<DailyReport[], string, { rejectValue: AxiosError }>(
@@ -75,3 +86,19 @@ export const deleteDailyReport = createAsyncThunk<DailyReport, DeleteDailyReport
         }
     },
 );
+
+export const fetchDailyReportKavappSync = createAsyncThunk<
+    DailyReportKavappSyncData,
+    FetchKavappSyncPayload,
+    WithRejectValue
+>("fetchDailyReportKavappSync", async ({ coffeeShopId, date }, { rejectWithValue }) => {
+    try {
+        const { data } = await apiClient.get<DailyReportKavappSyncData>(
+            apiEndpointNames.dailyReportsSyncKavapp(coffeeShopId, date),
+        );
+
+        return data;
+    } catch (error: unknown) {
+        return rejectWithValue(convertToApiError(error));
+    }
+});
