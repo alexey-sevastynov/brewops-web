@@ -7,6 +7,7 @@ export const facilityExpenseLabels: Record<keyof FacilityExpense, string> = {
     date: "Дата",
     period: "Період",
     description: "Опис",
+    receiptUrl: "Чек",
     createdAt: "Створено",
     updatedAt: "Оновлено",
 } as const;

@@ -8,6 +8,7 @@ export const facilityExpenseProps: Record<keyof FacilityExpense, string> = {
     date: nameOf<FacilityExpense>("date"),
     period: nameOf<FacilityExpense>("period"),
     description: nameOf<FacilityExpense>("description"),
+    receiptUrl: nameOf<FacilityExpense>("receiptUrl"),
     createdAt: nameOf<FacilityExpense>("createdAt"),
     updatedAt: nameOf<FacilityExpense>("updatedAt"),
 } as const;

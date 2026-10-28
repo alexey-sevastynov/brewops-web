@@ -10,6 +10,7 @@ export const expenseReportProps: Record<keyof ExpenseReport, string> = {
     validFrom: nameOf<ExpenseReport>("validFrom"),
     validTo: nameOf<ExpenseReport>("validTo"),
     description: nameOf<ExpenseReport>("description"),
+    receiptUrl: nameOf<ExpenseReport>("receiptUrl"),
     createdAt: nameOf<ExpenseReport>("createdAt"),
     updatedAt: nameOf<ExpenseReport>("updatedAt"),
 } as const;

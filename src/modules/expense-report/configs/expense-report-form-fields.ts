@@ -49,4 +49,9 @@ export const expenseReportFormFields: ResourceField<ExpenseReport>[] = [
         label: expenseReportLabels.description,
         type: resourceFieldTypes.text,
     },
+    {
+        name: expenseReportProps.receiptUrl as keyof ExpenseReport,
+        label: expenseReportLabels.receiptUrl,
+        type: resourceFieldTypes.text,
+    },
 ];

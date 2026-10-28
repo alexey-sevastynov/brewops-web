@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { resourceFieldTypes } from "@/shared/enums/resource-field-type";
+import { LinkCell } from "@/shared/ui/table/table-body/table-row/link-cell/LinkCell";
 import {
     createDateTableColumn,
     createTableColumn,
@@ -45,9 +46,15 @@ export const facilityExpenseColumns: ColumnDef<FacilityExpense>[] = [
         filterable: true,
         formatter: formatDateToMonth,
     }),
-    createDateTableColumn<FacilityExpense>({
-        accessorKey: facilityExpenseProps.createdAt,
-        header: facilityExpenseLabels.createdAt,
+    createTableColumn<FacilityExpense>({
+        accessorKey: facilityExpenseProps.receiptUrl,
+        header: facilityExpenseLabels.receiptUrl,
+        cell: (cellInfo) => <LinkCell cellInfo={cellInfo} text="Переглянути" />,
+        meta: {
+            label: facilityExpenseLabels.receiptUrl,
+            resourceFieldType: resourceFieldTypes.text,
+            filterable: false,
+        },
     }),
     createTableColumn<FacilityExpense>({
         accessorKey: facilityExpenseProps.description,
@@ -57,6 +64,10 @@ export const facilityExpenseColumns: ColumnDef<FacilityExpense>[] = [
             resourceFieldType: resourceFieldTypes.text,
             filterable: true,
         },
+    }),
+    createDateTableColumn<FacilityExpense>({
+        accessorKey: facilityExpenseProps.createdAt,
+        header: facilityExpenseLabels.createdAt,
     }),
     createDateTableColumn<FacilityExpense>({
         accessorKey: facilityExpenseProps.updatedAt,

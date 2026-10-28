@@ -9,6 +9,7 @@ export const inventoryAuditProps: Record<keyof InventoryAudit, string> = {
     validFrom: nameOf<InventoryAudit>("validFrom"),
     validTo: nameOf<InventoryAudit>("validTo"),
     description: nameOf<InventoryAudit>("description"),
+    receiptUrl: nameOf<InventoryAudit>("receiptUrl"),
     createdAt: nameOf<InventoryAudit>("createdAt"),
     updatedAt: nameOf<InventoryAudit>("updatedAt"),
 } as const;

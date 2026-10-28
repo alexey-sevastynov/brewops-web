@@ -8,6 +8,7 @@ export const inventoryAuditLabels: Record<keyof InventoryAudit, string> = {
     validFrom: "Діє з",
     validTo: "Діє до",
     description: "Опис",
+    receiptUrl: "Чек",
     createdAt: "Створено",
     updatedAt: "Оновлено",
 } as const;

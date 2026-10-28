@@ -1,9 +1,9 @@
-import { ReactNode } from "react";
+import { AnchorHTMLAttributes, ReactNode } from "react";
 import NextLink from "next/link";
 import { cn } from "@/shared/lib/cn";
 import { LinkVariantKey, linkVariantKeys } from "@/shared/ui/link/link-variant-key";
 
-interface LinkProps {
+interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
     href: string;
     children: ReactNode;
     variant?: LinkVariantKey;

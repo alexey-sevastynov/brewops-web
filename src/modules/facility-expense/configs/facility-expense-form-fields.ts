@@ -34,4 +34,9 @@ export const facilityExpenseFormFields: ResourceField<FacilityExpense>[] = [
         label: facilityExpenseLabels.description,
         type: resourceFieldTypes.text,
     },
+    {
+        name: facilityExpenseProps.receiptUrl as keyof FacilityExpense,
+        label: facilityExpenseLabels.receiptUrl,
+        type: resourceFieldTypes.text,
+    },
 ];

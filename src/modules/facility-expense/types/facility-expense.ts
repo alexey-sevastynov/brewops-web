@@ -7,4 +7,5 @@ export interface FacilityExpense extends WithObjectId, EntityTimestamps {
     date: string;
     period: string;
     description?: string;
+    receiptUrl?: string;
 }

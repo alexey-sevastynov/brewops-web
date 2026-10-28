@@ -1,5 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { resourceFieldTypes } from "@/shared/enums/resource-field-type";
+import { LinkCell } from "@/shared/ui/table/table-body/table-row/link-cell/LinkCell";
 import {
     createDateTableColumn,
     createTableColumn,
@@ -49,6 +50,16 @@ export const inventoryAuditColumns: ColumnDef<InventoryAudit>[] = [
     createDateTableColumn<InventoryAudit>({
         accessorKey: inventoryAuditProps.validTo,
         header: inventoryAuditLabels.validTo,
+    }),
+    createTableColumn<InventoryAudit>({
+        accessorKey: inventoryAuditProps.receiptUrl,
+        header: inventoryAuditLabels.receiptUrl,
+        cell: (cellInfo) => <LinkCell cellInfo={cellInfo} text="Переглянути" />,
+        meta: {
+            label: inventoryAuditLabels.receiptUrl,
+            resourceFieldType: resourceFieldTypes.text,
+            filterable: false,
+        },
     }),
     createTableColumn<InventoryAudit>({
         accessorKey: inventoryAuditProps.description,

@@ -36,6 +36,11 @@ export const inventoryAuditFormFields: ResourceField<InventoryAudit>[] = [
         type: resourceFieldTypes.date,
     },
     {
+        name: inventoryAuditProps.receiptUrl as keyof InventoryAudit,
+        label: inventoryAuditLabels.receiptUrl,
+        type: resourceFieldTypes.text,
+    },
+    {
         name: inventoryAuditProps.description as keyof InventoryAudit,
         label: inventoryAuditLabels.description,
         type: resourceFieldTypes.text,

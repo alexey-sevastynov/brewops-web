@@ -1,6 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { resourceFieldTypes } from "@/shared/enums/resource-field-type";
 import { BadgeCell } from "@/shared/ui/table/table-body/table-row/badge-cell/BadgeCell";
+import { LinkCell } from "@/shared/ui/table/table-body/table-row/link-cell/LinkCell";
 import {
     createDateTableColumn,
     createTableColumn,
@@ -57,11 +58,16 @@ export const expenseReportColumns: ColumnDef<ExpenseReport>[] = [
         accessorKey: expenseReportProps.validTo,
         header: expenseReportLabels.validTo,
     }),
-    createDateTableColumn<ExpenseReport>({
-        accessorKey: expenseReportProps.createdAt,
-        header: expenseReportLabels.createdAt,
+    createTableColumn<ExpenseReport>({
+        accessorKey: expenseReportProps.receiptUrl,
+        header: expenseReportLabels.receiptUrl,
+        cell: (cellInfo) => <LinkCell cellInfo={cellInfo} text="Переглянути" />,
+        meta: {
+            label: expenseReportLabels.receiptUrl,
+            resourceFieldType: resourceFieldTypes.text,
+            filterable: false,
+        },
     }),
-
     createTableColumn<ExpenseReport>({
         accessorKey: expenseReportProps.description,
         header: expenseReportLabels.description,
@@ -70,6 +76,10 @@ export const expenseReportColumns: ColumnDef<ExpenseReport>[] = [
             resourceFieldType: resourceFieldTypes.text,
             filterable: true,
         },
+    }),
+    createDateTableColumn<ExpenseReport>({
+        accessorKey: expenseReportProps.createdAt,
+        header: expenseReportLabels.createdAt,
     }),
     createDateTableColumn<ExpenseReport>({
         accessorKey: expenseReportProps.updatedAt,

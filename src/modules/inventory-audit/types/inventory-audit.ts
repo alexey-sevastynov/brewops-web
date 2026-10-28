@@ -8,4 +8,5 @@ export interface InventoryAudit extends WithObjectId, EntityTimestamps {
     validFrom: string;
     validTo: string;
     description?: string;
+    receiptUrl?: string;
 }
